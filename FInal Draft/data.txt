@@ -1,0 +1,91 @@
+P_R=P_B=P_G=100
+Br=75
+ P_screen*=(a_0a_R*P_R + a_0a_G*P_G + a_0a_B*P_B + Br*(a_R*P_R+a_G*P_G+a_B*P_B))
+    a_R=3.3996
+    a_G=7.0503
+    a_B=19.5081
+a_0a_R=242.3180
+a_0a_G=293.6999
+a_0a_B=294.0139    
+k_0 = 1.0
+    epsilon = 0.1
+    L_0 = 0.01（环境光固定）
+    omega = 0.0001
+    Fi_0 = 0.0
+    L_base = 0.01
+    a_ba = 1.0
+SCREEN规格  https://detail.zol.com.cn/1773/1772430/param.shtml
+
+
+/𝑃screen（由线性解表达）    https://zenodo.org/records/14314943
+
+
+    E_a2 = 0.2*1.602176634e-19
+    E_a1 = 0.7*1.602176634e-19
+Ea_1 （0.7eV）  
+题名：Photoelectron Spectroscopy of Molecular Anion of Alq3: An Estimation of Reorganization Energy for Electron Transport in the Bulk
+人名Yanase, T (Yanase, Toshiaki)  ; Nakanishi, R (Nakanishi, Ryuzo) ; Muramatsu, S (Muramatsu, Satoru) ; Koyasu, K (Koyasu, Kiichirou); Yoshida, H (Yoshida, Hiroyuki) ; Nagata, T (Nagata, Takashi)  ; Tsukuda, T (Tsukuda, Tatsuya)
+期刊ACS OMEGA Volume3 Issue11 Page 15200-15204
+DOI 10.1021/acsomega.8b02206
+
+𝐸a2(0.2eV,文本中的是0.16eV（近似），考虑到此材料仍然在研究中，估计值略大)（此处材料较少，为商业机密）
+题名The Effect of Purcell Cavities on the Lifetime of Thermally Activated Delayed Fluorescent Emitters
+人名Sritoma Paul;HaonanZhao;CollinN.Muniz;MarkE.Thompson;StephenR.Forrest 
+
+𝑃network =0.2 (有估计成分)
+题名A close examination of performance and power characteristics of 4G LTE networks.
+人名：Junxian Huang, Feng Qian, Alexandre Gerber, Z. Morley Mao, S. Sen, Oliver Spatscheck  
+（会议）ACM SIGMOBILE International Conference on Mobile Systems, Applications, and Services (2012).
+
+
+𝑃dynamic=（看图加估计） P_static
+  参数估计
+  aerfa_1 = 0.5
+    mu_1 = 1
+    b_1 = 1.0
+    lemda_1 = 2
+    aerfa_2 = 0.5
+    mu_2 = 1
+    b_2 = 1.0
+    lemda_2 = 5/2
+
+题目：Per-Core Power Modeling for Heterogenous SoCs
+人名Bhat, G (Bhat, Ganapati) ; Mandal, SK (Mandal, Sumit K.) ; Manchukonda, ST (Manchukonda, Sai T.); Vadlamudi, SV (Vadlamudi, Sai V.) ; Agarwal, A (Agarwal, Ayushi) ; Wang, J (Wang, Jun) ; Ogras, UY (Ogras, Umit Y.) 
+期刊：ELECTRONICS.Volume10Issue19
+DOI10.3390/electronics10192428
+
+c_1=0.2550   c_2=-3740  c_3=0.2561   c_4=-3740
+
+I_gc = 1e-7
+I_gg = 8.6e-8实验准确值+模型估计（文本中，Per-Core Power Modeling for Heterogenous SoCs，上面有）
+    U_1 = 1.2
+    U_2 = 1
+适当估计了,结合文章的图表
+
+𝑃speaker =0.3 （估计）
+𝑃camera =0.02 数据平均（https://zenodo.org/records/14314943 ）
+𝑃microphone=0.1 （估计）
+
+𝑞P.U. =>
+U_s = 3.7
+ I_s = 2.0  （估计）
+
+电源的电流I=0.5  （估计值）
+
+d ==0.005略厚于手机厚度的一半，因为选取的pixels 8太薄了（8.9mm），估计手机厚度在0.01m（一半）
+
+ 𝑐P.U.=712(CRC ......你发的那本书4-119面)
+ 𝑐battery=900  （估计）
+𝑚P.U. =  0.005 估计 
+𝑚battery=0.12  估计
+m_phone=0.06 估计
+ 𝐴phone=2*74.8*158.6e-6（https://detail.zol.com.cn/1773/1772430/param.shtml）  
+ 𝐴P.U. = 2*0.00175 估计 
+𝐴battery =2*6e-5 估计
+
+k 热导率 1 ，2.5，0.3 （这里都是除以二之后得到的结果（考虑到不能完全传热））
+r_i:
+r_i= (x[1] + x[2] * T_soc + x[3] * (T_soc ** 2) + x[4] * (T_soc ** 3)) * x[5] * (np.exp(x[6] / (T_battery + x[7])))
+x = [0, 4.8347, -0.2437, -0.3751, -0.1628, 6.0577, 2.6921, -0.8159]
+
+25度初温
