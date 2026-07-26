@@ -1,0 +1,174 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MCM/ICM LaTeX Template %%
+%% 2026 MCM/ICM           %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{left=1in,right=0.75in,top=1in,bottom=1in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Replace ABCDEF in the next line with your chosen problem
+% and replace 1111111 with your Team Control Number
+\newcommand{\Problem}{A}
+\newcommand{\Team}{2620586}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{newtxtext}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{newtxmath} % must come after amsXXX
+
+\usepackage[pdftex]{graphicx}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\lhead{Team \Team}
+\rhead{}
+\cfoot{}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}{Definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\graphicspath{{.}}  % Place your graphic files in the same directory as your main document
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif, .png}
+\thispagestyle{empty}
+\vspace*{-16ex}
+\centerline{\begin{tabular}{*3{c}}
+	\parbox[t]{0.3\linewidth}{\begin{center}\textbf{Problem Chosen}\\ \Large \textcolor{red}{\Problem}\end{center}}
+	& \parbox[t]{0.3\linewidth}{\begin{center}\textbf{2026\\ MCM/ICM\\ Summary Sheet}\end{center}}
+	& \parbox[t]{0.3\linewidth}{\begin{center}\textbf{Team Control Number}\\ \Large \textcolor{red}{\Team}\end{center}}	\\
+	\hline
+\end{tabular}}
+%%%%%%%%%%% Begin Summary %%%%%%%%%%%
+% Enter your summary here replacing the (red) text
+% Replace the text from here ...
+\begin{center}
+\textcolor{red}{%
+Use this template to begin typing the first page (summary page) of your electronic report. This \newline
+template uses a 12-point Times New Roman font. Submit your paper as an Adobe PDF \newline
+electronic file (e.g. 1111111.pdf), typed in English, with a readable font of at least 12-point type.	\\[2ex]
+Do not include the name of your school, advisor, or team members on this or any page.	\\[2ex]
+Be sure to change the control number and problem choice above.	\\
+You may delete these instructions as you begin to type your report here. 	\\[2ex]
+\textbf{Follow us @COMAPMath on X or COMAPCHINAOFFICIAL on Weibo for the \newline
+most up to date contest information.}
+}
+\end{center}
+% to here
+%%%%%%%%%%% End Summary %%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\pagestyle{fancy}
+% Uncomment the next line to generate a Table of Contents
+%\tableofcontents
+\newpage
+\setcounter{page}{1}
+\rhead{Page \thepage\ }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+While some animal species exist outside of the usual male or female sexes, most species are
+substantially either male or female. Although many species exhibit a 1:1 sex ratio at birth, other
+species deviate from an even sex ratio. This is called adaptive sex ratio variation. For example,
+the temperature of the nest incubating eggs of the American alligator influences the sex ratios at
+birth.
+
+The role of lampreys is complex. In some lake habitats, they are seen as parasites with a
+significant impact on the ecosystem, whereas lampreys are also a food source in some regions of
+the world, such as Scandinavia, the Baltics, and for some Indigenous peoples of the Pacific
+Northwest in North America.
+
+The sex ratio of sea lampreys can vary based on external circumstances. Sea lampreys become
+male or female depending on how quickly they grow during the larval stage. These larval growth
+rates are influenced by the availability of food. In environments where food availability is low,
+growth rates will be lower, and the percentage of males can reach approximately 78% of the
+population. In environments where food is more readily available, the percentage of males has
+been observed to be approximately 56% of the population.
+
+We focus on the question of sex ratios and their dependence on local conditions, specifically for
+sea lampreys. Sea lampreys live in lake or sea habitats and migrate up rivers to spawn. The task
+is to examine the advantages and disadvantages of the ability for a species to alter its sex ratio
+depending on resource availability. Your team should develop and examine a model to provide
+insights into the resulting interactions in an ecosystem.
+
+Questions to examine include the following:
+
+• What is the impact on the larger ecological system when the population of lampreys can
+alter its sex ratio?
+
+• What are the advantages and disadvantages to the population of lampreys?
+
+• What is the impact on the stability of the ecosystem given the changes in the sex ratios of
+lampreys?
+
+• Can an ecosystem with variable sex ratios in the lamprey population offer advantages to
+others in the ecosystem, such as parasites?
+
+Your PDF solution of no more than 25 total pages should include:
+• One-page Summary Sheet.
+• Table of Contents.
+• Your complete solution.
+• References list.
+• AI Use Report (If used does not count toward the 25-page limit.)
+
+Note: There is no specific required minimum page length for a complete MCM submission. You
+may use up to 25 total pages for all your solution work and any additional information you want
+to include (for example: drawings, diagrams, calculations, tables). Partial solutions are accepted.
+We permit the careful use of AI such as ChatGPT, although it is not necessary to create a solution
+to this problem. If you choose to utilize a generative AI, you must follow the COMAP AI use
+policy. This will result in an additional AI use report that you must add to the end of your PDF
+solution file and does not count toward the 25 total page limit for your solution.
+Glossary
+Lampreys: Lampreys (sometimes inaccurately called lamprey eels) are an ancient lineage of
+jawless fish of the order Petromyzontiformes. The adult lamprey is characterized by a toothed,
+funnel-like sucking mouth. Lampreys live mostly in coastal and fresh waters and are found in
+most temperate regions.
+
+
+Notations
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Notation & Description \\
+\hline
+$L$ & Total number of lampreys \\
+$M$ & Number of male lampreys \\
+$F$ & Number of female lampreys \\
+$r$ & Birth rate of lampreys \\
+$d$ & Mortality rate of lampreys \\
+$p$ & Probability of a female lamprey giving birth to a male \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\subsection{Mathematical Model}
+
+The dynamic of the Lamprey population can be described by the following differential equations:
+
+\begin{align*}
+\frac{dM}{dt} &= rM(F) - dM \\
+\frac{dF}{dt} &= rF(M) - dF \\
+\end{align*}
+
+where $rM(F)$ and $rF(M)$ are the birth rates of male and female lampreys, respectively. The
+mortality rates $dM$ and $dF$ account for natural deaths and other factors. The probability of a
+female lamprey giving birth to a male is represented by $p$.
+
+
+\section{Problem 1}
+
+Here we want to include the Lotka-Volterra Equation:
+\[
+\begin{cases}
+\frac{dx}{dt} = \alpha x - \beta xy \\
+\frac{dy}{dt} = \delta xy - \gamma y
+\end{cases}
+\]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+\end

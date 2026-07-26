@@ -1,0 +1,818 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{newtxtext}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{newtxmath} % must come after amsXXX
+\usepackage{upgreek}
+\usepackage[UTF8]{ctex}
+
+\begin{document}
+	
+	\title{数学基础 for MCM/ICM 2026}
+	\author{$\lambda$}
+	\date{\today}
+	\maketitle
+
+    \section{Monte Carlo方法与简单概率论}
+
+    \subsection{Monte Carlo方法简介}
+
+    Monte Carlo方法的基本思想是通过大量随机样本的统计分析来近似求解复杂问题。其核心步骤包括：
+    \begin{itemize}
+        \item 定义问题的概率模型。
+        \item 生成随机样本。
+        \item 计算样本的统计量。
+        \item 估计结果并评估误差。
+    \end{itemize}
+    举个栗子：设想一个边长为2的正方形，内切一个半径为1的圆。随机生成大量点，计算落在圆内的点的比例。进而可以推算$\pi$的近似值。
+
+    Note: 经常出现的一个问题是，“均匀”和“随机”到底指什么。有名的Betrand悖论就说明了这个问题的复杂性。这说明我们需要了解基本的分布。
+
+    \subsection{基本的分布类型}
+    
+    首先向我们走来的是离散分布方队。
+
+    \subsubsection{二项分布}
+    \[
+    P(x=k)=\binom{n}{k}p^k(1-p)^{n-k},\,E(X)=np,\,D(X)=np(1-p).
+    \]
+
+    \subsubsection{几何分布}
+    其针对Bernoulli试验中，第一次成功所需的试验次数$X$。
+    \[
+    P(X=k) = (1-p)^{k-1}p,\,E(X)=\frac{1}{p},\,D(X)=\frac{1-p}{p^2}.
+    \]
+
+    \subsubsection{超几何分布}
+    其针对从有限总体中抽取样本的情形。
+    \[
+    P(X=k)=\frac{\binom{m}{k}\binom{N-m}{n-k}}{\binom{N}{n}},\,E(X)=n\frac{m}{N},\,D(X)=n\frac{m}{N}\frac{N-m}{N}\frac{N-n}{N-1}.
+    \]
+
+    \subsubsection{Poisson分布}
+    其针对单位时间或单位面积内事件发生的次数。可以认为是二项分布在$n\to\infty,\,p\to 0,\,np=\lambda$时的极限形式（可以由Stirling公式和e的定义证明）。
+    \[
+    P(X=k)=\frac{\lambda^k}{k!}\mathrm e^{-\lambda},\,E(X)=\lambda,\,D(X)=\lambda.
+    \]
+
+    接下来向我们走来的是连续分布方队。其中的$f(x)$为概率密度函数。
+
+    \subsubsection{正态分布}
+    \[
+    f(x)=\frac{1}{\sqrt{2\pi}\sigma}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+    \]
+    其中$\mu$为均值，$\sigma$为标准差。正态分布有一个非常重要的性质：中心极限定理。此即，对于同分布的随机变量，若数目趋于无穷，其和的分布趋近于正态分布。
+
+    \subsubsection{$\chi^2$分布}
+    设$X_i\sim N(0,1),\,i=1,2,\cdots,n$，则随机变量
+    \[
+    \sum_{i=1}^n X_i^2\sim\chi^2(n).
+    \]
+    其概率密度函数
+    \[
+    f(x)=\begin{cases}
+        \frac{1}{2^{n/2}\Gamma(n/2)}x^{n/2-1}\mathrm e^{-x/2}, & x>0, \\
+        0, & x\leq 0.
+    \end{cases}
+    \]
+    其中Gamma函数定义为
+    \[
+    \Gamma(z)=\int_0^{+\infty}t^{z-1}\mathrm e^{-t}\mathrm dt.
+    \]
+    且$E(x)=n,\,D(x)=2n$。若两个独立变量$X\sim\chi^2(m),\,Y\sim\chi^2(n)$，则$X+Y\sim\chi^2(m+n)$。
+
+    \subsubsection{$t$分布}
+    设$X\sim N(0,1),\,Y\sim\chi^2(n)$且$X,Y$独立，则随机变量
+    \[
+    \frac{X}{\sqrt{Y/n}}\sim t(n).
+    \]
+    其概率密度函数为
+    \[
+    f(x)=\frac{\Gamma\left(\frac{n+1}{2}\right)}{\sqrt{n\pi}\Gamma\left(\frac{n}{2}\right)}\left(1+\frac{x^2}{n}\right)^{-\frac{n+1}{2}},\,x\in(-\infty,+\infty).
+    \]
+
+    \subsubsection{$F$分布}
+    设$X\sim\chi^2(m),\,Y\sim\chi^2(n)$且$X,Y$独立，则随机变量
+    \[
+    \frac{X/m}{Y/n}\sim F(m,n).
+    \]
+    其概率密度函数为
+    \[
+    f(x)=\frac{\Gamma\left(\frac{m+n}{2}\right)}{\Gamma\left(\frac{m}{2}\right)\Gamma\left(\frac{n}{2}\right)}\left(\frac{m}{n}\right)^{m/2}x^{m/2-1}(1+x)^{-\frac{m+n}{2}},\,x>0.
+    \]
+    且有性质：若$X\sim F(m,n)$，则$\frac{1}{X}\sim F(n,m)$。
+
+    以上分布中，$t$分布和$F$分布常用于统计学的假设检验中，见后文。
+
+    \subsection{其它简单的概率论知识}
+
+    \subsubsection{期望与方差}
+    我们非常熟悉离散情形下随机变量期望和方差的定义，将其中求和换成积分可以得到连续情形下的定义。设随机变量$X$的概率密度函数为$f(x)$，则
+    \[
+    E(X)=\int_{-\infty}^{+\infty}xf(x)\mathrm dx,\quad D(X)=\int_{-\infty}^{+\infty}(x-E(X))^2f(x)\mathrm dx.
+    \]
+
+    期望和方差有关系$D(X)=E(X^2)-(E(X))^2$。这一点不论连续还是离散均成立。
+
+    当随机变量$X,Y$独立时，有
+    \[
+    E(XY)=E(X)E(Y)\quad D(X+Y)=D(X)+D(Y)
+    \]
+    在不独立时，我们引入协方差的概念并改写关于方差的公式。
+    \begin{align*}
+        \mathrm{Cov}(X,Y)&=E\left[(X-E(X))(Y-E(Y))\right]=E(XY)-E(X)E(Y),\\
+        D(X+Y)&=D(X)+D(Y)+2\mathrm{Cov}(X,Y).
+    \end{align*}
+    这像极了完全平方公式。
+    
+    \subsubsection{卷积}
+    我们先从离散情形开始。设随机变量$X,Y$独立，且其分布列分别为$P_X(k),$ $P_Y(k)$，则随机变量$Z=X+Y$的分布列由全概率公式可以写出，为
+    \[
+    P_Z(k)=\sum_{i}P_X(i)P_Y(k-i).
+    \]
+    进而推广到连续情形。设随机变量$X,Y$独立，且其概率密度函数分别为$f_X(x),$ $f_Y(y)$，则随机变量$Z=X+Y$的概率密度函数为
+    \[
+    f_Z(z)=\int_{-\infty}^{+\infty}f_X(x)f_Y(z-x)\mathrm dx.
+    \]
+    对于乘除法呢？读者的思维能力很强，故这里留给读者想象代换过程。$Z_1=XY$和$Z_2=X/Y$的概率密度函数为
+    \begin{align*}
+        f_{Z_1}(z)&=\int_{-\infty}^{+\infty}\frac{1}{|x|}f_X(x)f_Y\left(\frac{z}{x}\right)\mathrm dx,\\
+        f_{Z_2}(z)&=\int_{-\infty}^{+\infty}|x|f_X(zx)f_Y(x)\mathrm dx.
+    \end{align*}
+
+    \subsubsection{大数定律}
+    大数定律描述了大量独立同分布随机变量的样本均值趋近于其期望值的现象。
+
+    \section{特征值与Markov过程}
+
+    \subsection{特征值简要介绍}
+
+    在线性代数中，特征值和特征向量是描述线性变换性质的重要概念。对于一个线性变换$\varphi$，如果存在一个非零向量$\boldsymbol v$和一个标量$\lambda$，使得
+    \[
+    \varphi(\boldsymbol{v}) = \lambda \boldsymbol{v},
+    \]
+    则称$\lambda$为该线性变换的特征值，$\boldsymbol{v}$为对应的特征向量。换句话说，特征向量在经过线性变换后，只会被缩放，而不会改变方向。这使得我们计算矩阵乘法有了更简便的方法。设上述$\varphi$对应的矩阵为$\boldsymbol{A}$，则$\boldsymbol{A}\boldsymbol{v} = \lambda \boldsymbol{v}$，又若其特征值和特征向量分别为$\{\lambda_i\}, \{\boldsymbol{v}_i\}$，则
+    \begin{equation}
+        \forall \boldsymbol{x} = \sum_i c_i \boldsymbol{v}_i\Rightarrow \boldsymbol{A}\boldsymbol{x} = \sum_i c_i \lambda_i \boldsymbol{v}_i\Rightarrow \boldsymbol{A}^n\boldsymbol{x} = \sum_i c_i \lambda_i^n \boldsymbol{v}_i.
+    \end{equation}
+    关于特征值，有
+    \[
+    \boldsymbol{A}\boldsymbol{v} = \lambda \boldsymbol{v} \Leftrightarrow \det(\boldsymbol{A}-\lambda \boldsymbol{I})=0.
+    \]
+    右边的行列式是一个关于$\lambda$的$n$次多项式，称为矩阵$\boldsymbol{A}$的特征多项式，其根即为$\boldsymbol{A}$的特征值。
+    
+    此时，你或许会发现，多项式可能有复根，那么特征值的虚部有什么几何意义？答案是旋转。具体而言，不妨设某个特征值为$\lambda=\rho\mathrm e^{\mathrm i\theta}$，其中$\rho$对应特征向量缩放的倍数，而$\theta$对应\textbf{整个平面}或\textbf{整个基底}的旋转角度。其技术性细节十分复杂，此处朴素理解即可。
+
+    \subsection{矩阵对角化}
+
+    上面的方程(1)启发我们，特征值可帮助我们计算矩阵的幂。我们设想，若矩阵$\boldsymbol A$表为
+    \[
+    \boldsymbol A=\boldsymbol X\boldsymbol D\boldsymbol X^{-1},\,\mathrm{where}\,\boldsymbol D=\mathrm{diag}(\xi_1,\cdots,\xi_n),\,\boldsymbol X\,\mathrm{invertible},
+    \]
+    那么我们就可以算得
+    \[
+    \boldsymbol A^n = \boldsymbol X\boldsymbol D^n\boldsymbol X^{-1}.
+    \]
+    如此强劲，令人惊叹！
+    
+    我们很自然地猜想，$\boldsymbol D$中的对角线元素$\xi_i$应该就是$\boldsymbol A$的特征值，而$\boldsymbol X$的列向量应该是对应的特征向量。事实也确实如此。设$\boldsymbol X=[\boldsymbol v_1,\boldsymbol v_2,\cdots,\boldsymbol v_n]$，则
+    \[
+    \boldsymbol A\boldsymbol X = \boldsymbol X\boldsymbol D\Rightarrow \boldsymbol A=\boldsymbol X\boldsymbol D\boldsymbol X^{-1}.
+    \]
+    然而，问题在于，并非所有矩阵都能被对角化。一个矩阵能否被对角化，取决于它的特征值和特征向量的性质。具体来说，如果一个$n\times n$的矩阵$\boldsymbol A$有$n$个线性无关的特征向量，那么它就可以被对角化。这由$\boldsymbol X$的可逆性保证。
+
+    \subsection{Markov过程}
+
+    我们在高中的时候就学过Markov过程。一个Markov过程有下面的三条性质：
+    \begin{itemize}
+        \item 可能的状态是有限的。
+        \item 系统在任一时刻$t$所处的状态只与时刻$t-1$的状态有关，而与更早的状态无关。
+        \item 状态转移概率不随时间变化。
+    \end{itemize}
+
+    如果我们使用全概率公式写出各主体的概率递推表达式，我们会得到一个线性方程组
+    \[
+    \boldsymbol u_{t+1}=\boldsymbol M\boldsymbol u_t,
+    \]
+    其中$\boldsymbol u_t$为时刻$t$各状态的概率分布向量，$\boldsymbol M$为状态转移矩阵，其中存储了各种情形下的概率，其各列的和为1。通过上面的讨论，我们可以得到
+    \[
+    \boldsymbol u_{t}=\boldsymbol M^{t}\boldsymbol u_0.
+    \]
+    这一部分正式讲解的时候已经举过例子了，所以上面只有形式化的说法。
+
+    \section{投影与最小二乘}
+
+    \subsection{投影}
+    
+    下面两种情形的图形在具体求解过程中画过了，所以不再画图。
+
+    \subsubsection{一维情形}
+
+    设$\boldsymbol a\in\mathbb R^n$非零，且$\boldsymbol b\in\mathbb R^n\backslash\mathrm{Span}\{\boldsymbol a\}$，那么我们在高中的时候就学过这个公式
+    \[
+    \boldsymbol p=\mathrm {proj}_{\boldsymbol a}\boldsymbol b=\frac{\boldsymbol a\cdot\boldsymbol b}{\boldsymbol a\cdot\boldsymbol a}\boldsymbol a=\frac{\boldsymbol a\boldsymbol a^{\mathrm T}}{\boldsymbol a^{\mathrm T}\boldsymbol a}\boldsymbol b.
+    \]
+    这是由于投影向量$\boldsymbol p$与$\boldsymbol b-\boldsymbol p$正交。下面推导之。设$\boldsymbol p=x\boldsymbol a$，则有$\boldsymbol p^\mathrm T(\boldsymbol b-\boldsymbol p)=0$，即$\boldsymbol p^\mathrm T\boldsymbol b=\boldsymbol p^\mathrm T\boldsymbol p$，从而得到$\boldsymbol p=\frac{\boldsymbol a\cdot\boldsymbol b}{\boldsymbol a\cdot\boldsymbol a}\boldsymbol a$。
+
+    此时表示投影变换的矩阵是$\boldsymbol P=\frac{\boldsymbol a\boldsymbol a^{\mathrm T}}{\boldsymbol a^{\mathrm T}\boldsymbol a}$。
+
+    \subsubsection{多维情形}
+
+    设$\boldsymbol A=[\boldsymbol a_1,\boldsymbol a_2,\cdots,\boldsymbol a_n]\in M_{m\times n}(\mathbb R),\,\mathrm{rank}(\boldsymbol A)=n$，且$\boldsymbol b\in\mathbb R^m\backslash\mathrm{Col}(\boldsymbol A)$，那么我们有
+    \begin{align*}
+        &\boldsymbol p=\sum_{i=1}^n x_i\boldsymbol a_i=\boldsymbol A\boldsymbol x\in\mathrm{Col}(\boldsymbol A),\\
+        &\boldsymbol a_1^\mathrm T(\boldsymbol b-\boldsymbol A\boldsymbol x)=0,\\
+        &\boldsymbol a_2^\mathrm T(\boldsymbol b-\boldsymbol A\boldsymbol x)=0,\\
+        &\cdots\\
+        &\boldsymbol a_n^\mathrm T(\boldsymbol b-\boldsymbol A\boldsymbol x)=0.
+    \end{align*}
+    也就是
+    \[
+    \boldsymbol A^\mathrm T(\boldsymbol b-\boldsymbol A\boldsymbol x)=0,
+    \]
+    故解出
+    \[
+    \boldsymbol x=(\boldsymbol A^\mathrm T\boldsymbol A)^{-1}\boldsymbol A^\mathrm T\boldsymbol b.
+    \]
+    此时表示投影变换的矩阵是$\boldsymbol P=\boldsymbol A(\boldsymbol A^\mathrm T\boldsymbol A)^{-1}\boldsymbol A^\mathrm T$。
+
+    \subsection{最小二乘法}
+
+    \subsubsection{方法介绍}
+
+    这一方法用于解超定方程组（也就是化简后方程数目比未知数数目多的方程组）。设$\boldsymbol A\in M_{m\times n}(\mathbb R),\,m>n$，且$\mathrm{rank}(\boldsymbol A)=n$，我们想要求解方程组$\boldsymbol A\boldsymbol x=\boldsymbol b$。由于方程组超定，通常无解。于是我们考虑寻找一个近似解$\boldsymbol{\hat x}$，使得$\|\boldsymbol A\boldsymbol{\hat x}-\boldsymbol b\|_2$最小。也就是说，我们希望找到一个$\boldsymbol{\hat x}$，使得$\boldsymbol A\boldsymbol{\hat x}$尽可能接近$\boldsymbol b$。很自然地，由几何的观点，我们寻求$\boldsymbol A\boldsymbol{\hat x}$为$\boldsymbol b$在$\mathrm{Col}(\boldsymbol A)$上的投影，这样差值是$\boldsymbol b$的终点到超平面$\mathrm{Col}(\boldsymbol A)$的距离，最小。由上节内容，我们有
+    \[
+    \boldsymbol{\hat x}=(\boldsymbol A^\mathrm T\boldsymbol A)^{-1}\boldsymbol A^\mathrm T\boldsymbol b.
+    \]
+    这样我们就解决了问题。
+
+    \subsubsection{高中学过的例子}
+
+    我们在高中就学过线性回归拟合的方法。设有数据点$(x_1,y_1),(x_2,y_2),$ $\cdots,(x_m,y_m)$，我们想找到一条直线$y=\hat bx+\hat a$，使得误差最小。我们先假设误差为0，那么这一组数据满足方程组
+    \begin{align*}
+        \hat bx_1+\hat a&=y_1,\\
+        \hat bx_2+\hat a&=y_2,\\
+        &\cdots\\
+        \hat bx_m+\hat a&=y_m.
+    \end{align*}
+    聪明的你会发现，这就是一个超定方程组。我们将其写成矩阵形式：
+    \[
+    \begin{bmatrix}
+        x_1 & 1 \\
+        x_2 & 1 \\
+        \vdots & \vdots \\
+        x_m & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+        \hat b \\ \hat a
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        y_1 \\ y_2 \\ \vdots \\ y_m
+    \end{bmatrix}
+    \]
+    这就是我们上面提到的最小二乘问题的形式。稍微拓展一点，讨论二次方程$y=\hat a x^2+\hat b x+\hat c$拟合，那么我们有
+    \begin{align*}
+        \hat a x_1^2 + \hat b x_1 + \hat c &= y_1,\\
+        \hat a x_2^2 + \hat b x_2 + \hat c &= y_2,\\
+        &\cdots\\
+        \hat a x_m^2 + \hat b x_m + \hat c &= y_m.
+    \end{align*}
+    进而矩阵形式是
+    \[
+    \begin{bmatrix}
+        x_1^2 & x_1 & 1 \\
+        x_2^2 & x_2 & 1 \\
+        \vdots & \vdots & \vdots \\
+        x_m^2 & x_m & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+        \hat a \\ \hat b \\ \hat c
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        y_1 \\ y_2 \\ \vdots \\ y_m
+    \end{bmatrix}
+    \]
+    其它类型的拟合类似。
+
+    \subsubsection{拟合的评价}
+
+    从几何上和从已知的经验，我们很容易想到用$\boldsymbol b$和超平面$\mathrm{Col}\boldsymbol A$的夹角余弦值来刻画拟合的精细程度。非常美味的事实：Cauchy-Schwarz不等式帮我们定义了高维空间中的夹角余弦值。设$\boldsymbol p=\boldsymbol A\boldsymbol{\hat x}$，则
+    \[
+    R=\cos\theta=\frac{\boldsymbol p^\mathrm T\boldsymbol b}{\|\boldsymbol p\|\|\boldsymbol b\|}=\frac{\boldsymbol{\hat x}^\mathrm T\boldsymbol A^\mathrm T\boldsymbol b}{\|\boldsymbol A\boldsymbol{\hat x}\|\|\boldsymbol b\|}.
+    \]
+    若$\boldsymbol b$和$\boldsymbol p$都已经去中心化（指减去各自的均值），则$|R|$在数值上等于决定系数的算术平方根。
+
+    Note：这里的决定系数和样本相关系数是不同的概念。样本相关系数用于描述两个变量之间的线性相关程度，而决定系数用于衡量回归模型对数据的拟合程度，更为一般化。在线性回归中二者统一。
+
+    \section{求算特征值与特征向量}
+
+	\subsection{Gram-Schmidt算法求正交基}
+
+    设$\{\boldsymbol v_1,\boldsymbol v_2,\cdots,\boldsymbol v_n\}$为线性无关向量组，我们想要通过Gram-Schmidt算法得到一个正交基$\{\boldsymbol u_1,\boldsymbol u_2,\cdots,\boldsymbol u_n\}$，使得
+    \[
+    \mathrm{Span}\{\boldsymbol v_1,\boldsymbol v_2,\cdots,\boldsymbol v_k\}=\mathrm{Span}\{\boldsymbol u_1,\boldsymbol u_2,\cdots,\boldsymbol u_k\},\quad k=1,2,\cdots,n,\,\mathrm{and}\,||\boldsymbol u_i||_2=1.
+    \]
+
+    首先，我们取$\boldsymbol u_1=\frac{\boldsymbol v_1}{||\boldsymbol v_1||_2}$。接下来，我们通过从$\boldsymbol v_2$中减去其在$\boldsymbol u_1$方向上的投影，得到一个与$\boldsymbol u_1$正交的向量，再单位化，得到$\boldsymbol u_2$：
+    \[
+    \boldsymbol p_2=\frac{\boldsymbol u_1\boldsymbol u_1^\mathrm T\boldsymbol v_2}{||\boldsymbol u_1||_2^2},\,\boldsymbol u_2=\frac{\boldsymbol v_2-\boldsymbol p_2}{||\boldsymbol v_2-\boldsymbol p_2||_2}.
+    \]
+    然后我们继续对$\boldsymbol v_3$进行类似操作，得到$\boldsymbol u_3$：
+    \[
+    \boldsymbol p_3=\frac{\boldsymbol u_1\boldsymbol u_1^\mathrm T\boldsymbol v_3}{||\boldsymbol u_1||_2^2}+\frac{\boldsymbol u_2\boldsymbol u_2^\mathrm T\boldsymbol v_3}{||\boldsymbol u_2||_2^2},\,\boldsymbol u_3=\frac{\boldsymbol v_3-\boldsymbol p_3}{||\boldsymbol v_3-\boldsymbol p_3||_2}.
+    \]
+    这里$\boldsymbol p_3$的求算采用分解到各个$\boldsymbol u_i$方向上的投影再相加的方式。请注意，此处$p_3$求算的是投影，并不需要保证和$\boldsymbol u_1$正交，理解时不要把$\boldsymbol p$和$\boldsymbol u$混淆。在正式讲解的时候已作图，此处从略。之后的一般情况，
+    \[
+    \boldsymbol p_k=\sum_{i=1}^{k-1}\frac{\boldsymbol u_i\boldsymbol u_i^\mathrm T\boldsymbol v_k}{||\boldsymbol u_i||_2^2},\,\boldsymbol u_k=\frac{\boldsymbol v_k-\boldsymbol p_k}{||\boldsymbol v_k-\boldsymbol p_k||_2}.
+    \]
+    最终得到的向量组$\{\boldsymbol u_1,\boldsymbol u_2,\cdots,\boldsymbol u_n\}$就是我们所求的正交基。
+
+    这一部分的算法在正式讲解的时候出现知识性错误，请以这一份为准。非常抱歉。
+
+    \subsection{QR分解法}
+
+    就像行变换和列变换可以等价于左乘或右乘一个矩阵一样，上面的方法也可以用矩阵描述，一个矩阵$\boldsymbol Q=[\boldsymbol u_1,\boldsymbol u_2,\cdots,\boldsymbol u_n]$存储我们的正交基，另一个矩阵$\boldsymbol R$用来描绘我们求正交基的过程。
+    
+    我在正式讲解的时候已经举过一个通过变换求解各基向量的算式得到$\boldsymbol R$的例子，故这里直接给出结论：
+    \[
+    \boldsymbol R=
+    \begin{bmatrix}
+        \boldsymbol u_1^\mathrm T\boldsymbol v_1 & \boldsymbol u_1^\mathrm T\boldsymbol v_2 & \cdots & \boldsymbol u_1^\mathrm T\boldsymbol v_n \\
+        0 & \boldsymbol u_2^\mathrm T\boldsymbol v_2 & \cdots & \boldsymbol u_2^\mathrm T\boldsymbol v_n \\
+        0 & 0 & \cdots & \boldsymbol u_3^\mathrm T\boldsymbol v_n \\
+        \vdots & \vdots & \ddots & \vdots \\
+        0 & 0 & 0 & \boldsymbol u_n^\mathrm T\boldsymbol v_n
+    \end{bmatrix}
+    \]
+    这样，我们就得到了$\boldsymbol A=\boldsymbol Q\boldsymbol R$的QR分解形式，其中$\boldsymbol A=[\boldsymbol v_1,\boldsymbol v_2,\cdots,\boldsymbol v_n]$。
+
+    \subsection{用QR分解求特征值}
+
+    设$\boldsymbol A\in M_{n\times n}(\mathbb R)$，我们想要求解其特征值和特征向量。我们可以通过QR分解来实现。首先，我们对$\boldsymbol A$进行QR分解，得到$\boldsymbol A=\boldsymbol Q_1\boldsymbol R_1$。然后，我们构造一个新的矩阵$\boldsymbol A_1=\boldsymbol R_1\boldsymbol Q_1$。接下来，我们对$\boldsymbol A_1$进行QR分解，得到$\boldsymbol A_1=\boldsymbol Q_2\boldsymbol R_2$，并构造$\boldsymbol A_2=\boldsymbol R_2\boldsymbol Q_2$。我们重复这个过程，得到一系列矩阵$\boldsymbol A_k$。 随着迭代的进行，矩阵$\boldsymbol A_k$会逐渐趋近于一个上三角矩阵，其对角线上的元素即为$\boldsymbol A$的特征值。通过这种方法，我们可以有效地求解矩阵的特征值和特征向量。
+
+    \section{统计学基础}
+
+    \subsection{亿些腚理}
+    
+    \subsubsection{单总体情形}
+
+    设随机变量$X_i\sim N(\mu,\sigma^2),\,i=1,2,\cdots,n$，样本的均值为$\bar{X}=\frac{1}{n}\sum_{i=1}^n X_i$，样本方差为$S^2=\frac{1}{n-1}\sum_{i=1}^n (X_i-\bar{X})^2$（注意这里方差和我们所学的方差定义上有区别，这里分母取$n-1$是因为该方差只有$(n-1)$个自由度），那么我们有
+
+    \begin{itemize}
+        \item $\bar{X}\sim N\left(\mu,\frac{\sigma^2}{n}\right)$
+        \item $\frac{(n-1)S^2}{\sigma^2}\sim\chi^2(n-1)$
+        \item $\bar{X}$与$S^2$相互独立
+        \item $\frac{\bar{X}-\mu}{S/\sqrt{n}}\sim t(n-1)$
+    \end{itemize}
+
+    \subsubsection{双总体情形}
+
+    设随机变量$X_i\sim N(\mu_1,\sigma_1^2),\,i=1,2,\cdots,n_1$，$Y_j\sim N(\mu_2,\sigma_2^2),\,j=1,2,$ $\cdots,n_2$，样本的均值为$\bar{X},\,\bar{Y}$，样本方差为$S_X^2,\,S_Y^2$，那么我们有
+
+    \begin{itemize}
+        \item $\frac{S_X^2/\sigma_1^2}{S_Y^2/\sigma_2^2}\sim F(n_1-1,n_2-1)$
+        \item $\bar{X}-\bar{Y}\sim N\left(\mu_1-\mu_2,\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}\right)$
+        \item 若$\sigma_1^2=\sigma_2^2=\sigma^2$，则有$\frac{(n_1-1)S_X^2+(n_2-1)S_Y^2}{\sigma^2}\sim\chi^2((n_1-1)+(n_2-1))$
+        \item 若$\sigma_1^2=\sigma_2^2=\sigma^2$，则有$\frac{\bar{X}-\bar{Y}-(\mu_1-\mu_2)}{\sqrt{\frac{S_w^2}{n_1}+\frac{S_w^2}{n_2}}}\sim t((n_1-1)+(n_2-1))$，其中$S_w^2=\frac{(n_1-1)S_X^2+(n_2-1)S_Y^2}{(n_1-1)+(n_2-1)}$
+    \end{itemize}
+
+    \subsubsection{假设检验}
+
+    具体例子在正式讲解时举过了，故这里只给出形式化的表达。设原假设$H_0$和备择假设$H_1$，显著性水平$\alpha$，我们通过样本数据计算出一个检验统计量$t$，然后将其与预先设定的拒绝域（与$\alpha$有关，表示哪些情况下拒绝原假设）进行比较。如果$t$落在拒绝域内，我们就有足够的证据拒绝原假设$H_0$（小概率事件发生了），认为备择假设$H_1$更有可能成立；如果$t$不在拒绝域内，我们则无法拒绝原假设（大概率事件，正常情形），认为现有数据不足以支持备择假设。
+
+    \subsubsection{参数估计}
+
+    现在假想我们的模型中有一个参数没有确定，我们希望观测数据估计这个参数。此处介绍最大似然估计，这也是大家熟悉的话题。其思想是：用使得观测数据出现概率最大的参数值作为估计值。
+
+    设随机变量$X$的概率密度函数为$f(x;\theta)$，其中$\theta$为待估参数。给定观测数据$x_1,x_2,\cdots,x_n$。我们寻求一个似然函数，使得其能表征观测数据出现的概率。由于各观测数据相互独立，故可以取似然函数为
+    \[
+    L(\theta)=\prod_i f(x_i;\theta).
+    \]
+    进而若我们要取最大值，在实操上不妨这样做
+    \[
+    \frac{\partial}{\partial\theta}\ln L(\theta)=\sum_i \frac{\partial}{\partial\theta}\ln f(x_i;\theta)=0\Rightarrow \theta_0.
+    \]
+
+    \section{简单的算法}
+
+    请注意，绝大多数算法的核心是：将复杂的问题分解为简单的问题，然后逐步求解，即分而治之。这里我们只介绍一些简单且常见的算法，复杂的算法请读者参考相关书籍或文献。
+
+    \subsection{递归}
+
+    这种算法通过函数不断调用自身求解。可以理解为将大问题变成类似的小问题，最后变成一个平凡的问题，进而得到解。下面给两个例子。
+
+    \subsubsection{质因数分解}
+
+    定义$\mathrm{factor}(a)$为$a$的质因数分解函数。我们可以使用递归的方法来实现。
+    
+    \begin{enumerate}
+        \item 寻找最大质数$p$使得$p|a$，并令$a'=\frac{a}{p}$。
+        \item $\mathrm{factor}(a)=1$，若$a'=1$；否则，$\mathrm{factor}(a)=\mathrm{factor}(a')\times p$。
+    \end{enumerate}
+
+    \subsubsection{深度优先搜索（Depth First Search, DFS）}
+
+    想象你在游历某个有界网格，从某起点开始，你想走到终点，但是在网格图中有一些障碍物，你不能走过去。你可以使用DFS算法来寻找一条可行的路径。
+
+    \begin{enumerate}
+        \item 从起点开始，标记当前格为已访问。
+        \item 遍历寻找的方向。
+        \item 若对应方向可以前进（即未越界且非障碍物），移动到该相邻格，继续执行步骤1；否则，回溯到上一格，继续执行步骤2。
+        \item 如果找到了终点，返回路径；否则，返回无解。
+    \end{enumerate}
+
+    \subsection{递推}
+
+    递推算法通过已知的初始条件和递推关系，逐步计算出后续的值。之前介绍的Markov过程的概率递推就是一个例子。这里再给出一个例子。
+
+    \subsubsection{动态规划之0-1背包问题}
+
+    设有$n$件物品和一个容量为$C$的背包。每件物品$i$有重量$w_i$和价值$v_i$。我们想要选择一些物品放入背包，使得总重量不超过$C$，且总价值最大。
+
+    \begin{enumerate}
+        \item 定义状态：设$\mathrm{dp}[i][j]$表示前$i$件物品中，容量为$j$的背包所能获得的最大价值。
+        \item 初始化：$\mathrm{dp}[0][j]=0,\,\forall j$；当$0\leq j < w_1$时$\mathrm{dp}[1][j]=0$，当$j \geq w_1$时$\mathrm{dp}[1][j]=v_1$。
+        \item 递推过程（写所谓“状态转移方程”）：
+        \[
+        \mathrm{dp}[i][j] = \begin{cases}
+            \mathrm{dp}[i-1][j], & \text{if} j < w_i \\
+            \max(\mathrm{dp}[i-1][j], \mathrm{dp}[i-1][j-w_i] + v_i), & \text{if} j \geq w_i
+        \end{cases}
+        \]
+        其中第一行对应清空背包也放不下第$i$件物品的情形，第二行对应可以选择放或不放第$i$件物品的情形，注意第二种情况中要考虑在放第$i$件物品时要先腾出相应空间。
+        \item 最终结果：$\mathrm{dp}[n][C]$。
+    \end{enumerate}
+
+    \subsection{图论}
+
+    大家在线性代数课上或许已经接触过了用集合与序关系定义的有向图与无向图。实际上，大家可以将图想象为一些街道的路段（边）和一些路口（节点），若每条路都是单行道，则对应的图是有向图，若每条路可以双向通行，则对应的图是无向图。每个路段的长度对应着图论中的权值概念。这里我们简单介绍两个求最短路径的算法，具体的例子在正式讲解的时候举过了，故这里采用较为形式化的语言介绍。
+
+    \subsubsection{Dijkstra算法}
+
+    设有一个加权有向图$G=(V,E)$，其中$V$为节点集合，$E$为边集合，每条边$(u,v)\in E$有一个非负权值$w(u,v)$。我们想要找到从起点（节点1）到所有其他节点的最短路径（单源最短路径）。
+
+    \begin{enumerate}
+        \item 初始化：设$\mathrm{dist}[j]$为节点$1$到节点$j$的最短路径长度，初始时$\mathrm{dist}[j]=w(1,j)$若$(1,j)\in E$（即已联通，不是电信也不是移动），否则$\mathrm{dist}[j]=\infty$；且$\mathrm{dist}[1]=0$。
+        \item 设已确定最短路径的节点集合为$S$，初始时$S=\{1\}$。
+        \item 重复以下步骤直到$S=V$：
+        \subitem 选择一个未确定最小值的节点$u$，使得$\mathrm{dist}[u]$最小。将$u$加入集合$S$，认为它已经确定最小值（值得思考，为什么？）。
+        \subitem 对于每个未确定最小值且与$u$相连的节点$v$，若通过$u$到达$v$的路径更短，则更新$\mathrm{dist}[v]$为$\mathrm{dist}[u] + w(u,v)$。
+    \end{enumerate}
+
+    \subsubsection{Floyd算法}
+
+    设有一个加权有向图$G=(V,E)$，其中$V$为节点集合，$E$为边集合，每条边$(u,v)\in E$有一个非负权值$w(u,v)$。我们想要找到所有节点对之间的最短路径（多源最短路径）。
+
+    \begin{enumerate}
+        \item 初始化：设$\mathrm{dist}[i][j]$为节点$i$到节点$j$的最短路径长度，初始时$\mathrm{dist}[i][j]=w(i,j)$若$(i,j)\in E$，否则$\mathrm{dist}[i][j]=\infty$；且$\mathrm{dist}[i][i]=0$。
+        \item 对于每个中间节点$k$，遍历所有节点对$(i,j)$，更新最短路径：
+        \[
+        \mathrm{dist}[i][j] = \min(\mathrm{dist}[i][j], \mathrm{dist}[i][k] + \mathrm{dist}[k][j]).
+        \]
+    \end{enumerate}
+
+    \section{常微分方程}
+
+    一些常见的、简单的常微分方程有解析解法。通过查阅各种高等数学教材都可以找到。此处略。
+
+    \subsection{Runge-Kutta方法}
+
+    这一方法的最简单形式针对一阶的方程（其中$t$为变元，$x$是要求解的函数）
+    \[
+    \dot{x}=f(x,t).
+    \]
+    我们先来思考，对于求一个常微分方程的数值解，我们可以考虑在每一个时刻计算在下一时刻的近似值，最后得到一个散点图像。那么，对于极小的增量$\Delta t$，我们想讨论$x(t+\Delta t)$，一个很自然的想法是使用Taylor展开：
+    \[
+    x(t+\Delta t)=x(t)+\dot{x}(t)\Delta t+\frac{1}{2}\ddot{x}(t){(\Delta t)}^2+\cdots.
+    \]
+    其中$\dot{x}(t)=f(x(t),t)$，但是$\ddot{x}(t)$的计算就比较麻烦了，我们需要对$f$求导：
+    \[
+    \ddot{x}=\frac{\partial}{\partial t}f(x,t)=\frac{\partial f}{\partial x}\dot{x}+\frac{\partial f}{\partial t}=\frac{\partial f}{\partial x}f(x,t)+\frac{\partial f}{\partial t}.
+    \]
+    之后的Taylor展开高阶项更加复杂，我们暂时不作考虑。然而，即使只考虑前两项，式子中也出现了$f$的偏导数，计算量较大。于是我们考虑一种折中的方法，Runge-Kutta方法。 它的基本思想是，在每一个时间步长内，使用多个点的斜率的加权平均来近似该步长内的平均斜率，从而提高数值解的精度。对于上面的二阶方法，我们定义：
+    \begin{align*}
+        k_1&=f(x(t),t),\\
+        k_2&=f\left(x(t)+\alpha\Delta tk_1,t+\beta\Delta t\right).
+    \end{align*}
+    这样，$k_1$是当前点的斜率，$k_2$是使用$k_1$预测的某点处的斜率。然后，我们使用这两个斜率的加权平均来更新$x$的值：
+    \[
+    x(t+\Delta t)=x(t)+ak_1\Delta t+bk_2\Delta t.
+    \]
+    这里的系数$a,b,\alpha,\beta$需要满足一定的条件才能保证该方法的二阶精度。通过对Taylor展开进行比较，我们可以得到以下条件：
+    \begin{align*}
+        a+b&=1,\\
+        b\alpha&=\frac{1}{2},\\
+        b\beta&=\frac{1}{2}.
+    \end{align*}
+    这组方程有无穷多组解，我们可以任选一组，例如$a=b=\frac{1}{2},\alpha=\beta=1$，从而得到一个具体的二阶Runge-Kutta方法：
+    \begin{align*}
+        k_1&=f(x(t),t),\\
+        k_2&=f\left(x(t)+\Delta tk_1,t+\Delta t\right),\\
+        x(t+\Delta t)&=x(t)+\frac{1}{2}k_1\Delta t+\frac{1}{2}k_2\Delta t.
+    \end{align*}
+    但是这样的方法在较多的迭代次数下仍然会积累较大的误差，因此我们可以考虑更高阶的Runge-Kutta方法，例如经典的四阶Runge-Kutta方法。它定义如下：
+    \begin{align*}  
+        k_1&=f(x(t),t),\\
+        k_2&=f\left(x(t)+\frac{1}{2}\Delta tk_1,t+\frac{1}{2}\Delta t\right),\\
+        k_3&=f\left(x(t)+\frac{1}{2}\Delta tk_2,t+\frac{1}{2}\Delta t\right),\\
+        k_4&=f\left(x(t)+\Delta tk_3,t+\Delta t\right),\\
+        x(t+\Delta t)&=x(t)+\frac{1}{6}(k_1+2k_2+2k_3+k_4)\Delta t.
+    \end{align*}
+    该方法通过四个斜率的加权平均来更新$x$的值，具有较高的精度和稳定性，广泛应用于各种常微分方程的数值求解中。
+
+    Note: 经分析，对于$1,\,2,\,3,\,4$阶偏导数的情形，Runge-Kutta方法中的$k$值分别需要计算$1,\,2,\,3,\,4$次。而对于$5$阶偏导数的情形，Runge-Kutta方法需要计算$6$次$k$值。所以4阶方法应用最广泛。
+
+    很自然地，我们也可以将Runge-Kutta方法推广到高阶常微分方程。对于一个$n$阶常微分方程
+    \[
+    \frac{\mathrm d^n x}{\mathrm dt^n} = f\left(x, \frac{\mathrm dx}{\mathrm dt}, \frac{\mathrm d^2x}{\mathrm dt^2}, \ldots, \frac{\mathrm d^{n-1}x}{\mathrm dt^{n-1}}, t\right),
+    \]
+    我们可以将其转化为一个一阶常微分方程组，然后应用Runge-Kutta方法。具体来说，我们引入新的变量：
+    \begin{align*}
+        y_1 &= x,\\
+        y_2 &= \frac{\mathrm dx}{\mathrm dt},\\
+        y_3 &= \frac{\mathrm d^2x}{\mathrm dt^2},\\
+        &\cdots\\
+        y_n &= \frac{\mathrm d^{n-1}x}{\mathrm dt^{n-1}}.
+    \end{align*}
+    这样，我们可以将原来的$n$阶常微分方程转化为以下一阶常微分方程组：
+    \begin{align*}
+        \frac{\mathrm dy_1}{\mathrm dt} &= y_2,\\
+        \frac{\mathrm dy_2}{\mathrm dt} &= y_3,\\
+        &\cdots\\
+        \frac{\mathrm dy_{n-1}}{\mathrm dt} &= y_n,\\
+        \frac{\mathrm dy_n}{\mathrm dt} &= f(y_1, y_2, \ldots, y_n, t).
+    \end{align*}
+    将其写为向量形式，我们有
+    \[
+    \frac{\mathrm d\boldsymbol y}{\mathrm dt} = \boldsymbol F(\boldsymbol y, t),
+    \]
+    其中$\boldsymbol y = (y_1, y_2, \ldots, y_n)^\mathrm T$，$\boldsymbol F$是包含$f$作为一个分量的函数向量。
+    然后，我们可以应用Runge-Kutta方法来求解这个一阶常微分方程组，从而得到原始$n$阶常微分方程的数值解。将其中的$x$替换为向量$\boldsymbol y$即可。
+
+    \subsection{相图}
+
+    让我们从一个栗子开始。在用某种解法解舒幼生老师《力学》的习题2-34（关于水滴下落时加速度趋于稳定值的习题）时，我们遇到了方程
+    \[
+    3v\ddot v-7\dot v^2+8g\dot v-g^2=0,
+    \]
+    下面介绍一种不直接求解，但可以得到稳态的方法。我们不妨这样改写：
+    \[
+    \begin{cases}
+        \dot a=\frac{7}{3v}\left(a-\frac{1}{7}g\right)(a-g),\\
+        \dot v=a.
+    \end{cases}
+    \]
+    现在，在某个点$(a,v)$处，我们可以得到$a$和$v$的变化率。这可以理解为这个点的“速度”矢量被我们的方程给定了。换句话说，对于每一个$(a|_t,v|_t)$点，我们都可以画出一个箭头，指向其下一时刻对应的$(a|_{t+\Delta t},v|_{t+\Delta t})$。如果将这些箭头连成线，你会发现这些线从直线$a=g$出发，渐近于直线$a=\frac{g}{7}$。
+
+    这就是相图法。它的优势在于可以直观地展示系统的行为，而不需要进行复杂的分析。进行上面这一切的要求是方程中不显含$t$。
+    
+    一般地，对于一个不显含自变量$t$的$n$阶常微分方程
+    \[
+    \frac{\mathrm d^n x}{\mathrm dt^n} = f\left(x, \frac{\mathrm dx}{\mathrm dt}, \frac{\mathrm d^2x}{\mathrm dt^2}, \ldots, \frac{\mathrm d^{n-1}x}{\mathrm dt^{n-1}}\right),
+    \]
+    我们可以类似Runge-Kutta方法引入新变量
+    \begin{align*}
+        y_1 &= x,\\
+        y_2 &= \frac{\mathrm dx}{\mathrm dt},\\
+        y_3 &= \frac{\mathrm d^2x}{\mathrm dt^2},\\
+        &\cdots\\
+        y_n &= \frac{\mathrm d^{n-1}x}{\mathrm dt^{n-1}},
+    \end{align*}
+    进而将方程改写为向量形式
+    \[
+    \frac{\mathrm d\boldsymbol y}{\mathrm dt} = \boldsymbol F(\boldsymbol y),
+    \]
+    其中$\boldsymbol y = (y_1, y_2, \ldots, y_n)^\mathrm T$，$\boldsymbol F$是包含$f$作为一个分量的函数向量。然后我们可以在$\mathbb R^n$上作图描绘出向量场$\boldsymbol y$，从而得到系统的行为。
+
+    这是一种非常实用的方法，在具有作图能力的前提下我非常推荐它。下面讲讲它的一些相关概念和性质。
+
+    \subsubsection{平衡点}
+
+    对于这一小节和下一小节（“稳定条件”），可以想象一个曲面以辅助理解。现认为这个曲面是地面，假定它是$\boldsymbol y$对应的势场$\varphi$（假设势是可以定义的），而$\boldsymbol y=-\nabla \varphi$。力学里我们知道，某个小球放在地面上，若不滚动，分稳定平衡、不稳定平衡、随遇平衡三种情形，但是它们有共同点：此处重力势场的梯度为$\boldsymbol 0$（也就是没有运动趋势）。所以在微分方程的语境中，某个平衡点处一定有
+    \[
+    \boldsymbol y=\boldsymbol 0.
+    \]
+
+    \subsubsection{稳定条件}
+
+    类似上面提到的稳定平衡的概念，在相图中，若某个点是稳定的，那么在它周围一定范围内的点总随着向量场运动达到这个点。换个角度说，在稳定点周围，向量场的方向总是与偏离稳定点的方向相反，尽管可能不是完全反向共线。又换个角度说，在稳定点处，势能函数取极小值。
+
+    由偏移量自然想到在稳定点附近将微分方程近似为线性方程组，也就是
+    \[
+    \frac{\mathrm d\boldsymbol y}{\mathrm dt}\approx\mathcal F\boldsymbol y,
+    \]
+    其中$\mathcal F$是一个$n\times n$矩阵，下面具体分析它的形式。
+
+    对于$\dot{\boldsymbol y}$的第$i$个分量$\dot y_i$，我们将其微分分解到每个分量上，有
+    \[
+    \dot y_i=\sum_{j=1}^n\frac{\partial F_i}{\partial y_j},
+    \]
+    其中$F_i$是$\boldsymbol F$的第$i$个分量。那么将每一个$i$的方程整理成方程组，就是
+    \[
+    \frac{\mathrm d\boldsymbol y}{\mathrm dt}\approx\mathcal F\boldsymbol y,\,\mathrm{where}\,\mathcal F=
+    \begin{bmatrix}
+        \frac{\partial F_1}{\partial y_1} & \frac{\partial F_1}{\partial y_2} & \cdots & \frac{\partial F_1}{\partial y_n}\\
+        \frac{\partial F_2}{\partial y_1} & \frac{\partial F_2}{\partial y_2} & \cdots & \frac{\partial F_2}{\partial y_n}\\
+        \vdots & \vdots & \ddots & \vdots\\
+        \frac{\partial F_n}{\partial y_1} & \frac{\partial F_n}{\partial y_2} & \cdots & \frac{\partial F_n}{\partial y_n}
+    \end{bmatrix}.
+    \]
+    这里的$\mathcal F$又叫做Jacobi矩阵，在别处更常见的符号是$\boldsymbol J$。那么，我们不妨考察$\mathcal F$的特征值。回忆特征值的几何意义，当特征值是实数时，其意味着线性变换后基底的长度变化；当它是复数且实部是负数时，基底变为与原来相反的方向，这和我们需要的“总是与偏离稳定点的方向相反”不谋而合。而“可能不是完全反向共线”则取决于特征值的虚部，因为特征值的虚部控制基底的旋转。
+
+    所以，假若矩阵$\mathcal F$的特征值都有负实部，那么可以认为在所求点附近方程是稳定的。这就是Lyapunov第一方法。上面的朴素理解算是个人观点，用DeepSeek大致确认了合理性。
+
+    而最后提及的“势能函数取极小值”的理解对应的是Lyapunov第二方法。它要求构造出一个合理的“势能函数”，而这是比较困难的，在此不提。二者构成了著名的Lyapunov稳定性理论。
+
+    \subsubsection{极限环}
+
+    极限环是相图中向量描绘的一条闭合轨迹，对应于一个周期解。在它附近没有其他轨迹，且类似上文平衡点（孤立解），极限环也有稳定（吸引周围的向量）、不稳定（排斥周围的向量）和半稳定（内外中有一侧吸引，一侧排斥）三种类型。
+
+    下面介绍判断极限环存在或不存在的两种方法。
+    \begin{itemize}
+        \item Poincaré-Bendixson定理：在某个有界闭区域$D$内没有平衡点或只有一个不稳定的平衡点，且从其内部出发的“轨迹”始终在$D$内，那么$D$内至少存在一个极限环。
+        \item Bendixson判据。应好理解极限环分割整个相图为不联通的两部分，故在极限环上向量场的通量应当为0。进而若某有界闭区域$D$内部的散度（即，极限环内向量场的源被控制）保持恒定符号且不恒为0，那么$D$内一定没有极限环。
+    \end{itemize}
+
+    其稳定性判断方法过于复杂，此处不详细展开。实际应用看图即可。
+
+    \subsection{Laplace变换}
+
+    这一方法适用于线性常微分方程，但是最后一步逆变换非常逆天，我建议非必要不采用这种方法。
+
+    我们不加介绍和证明地给出Laplace变换的定义。设$f(t)$为定义在$[0,+\infty)$上的函数，则其Laplace变换定义为
+    \[
+    F(s)=\mathcal{L}\{f(t)\}=\int_0^{+\infty}f(t)\mathrm e^{-st}\mathrm dt.
+    \]
+    Laplace变换的一个重要性质是它将微分方程转化为代数方程，从而简化了解的过程。具体来说，设$f(t)$的Laplace变换为$F(s)$，则有以下性质：
+    \begin{itemize}
+        \item 线性性质：$\mathcal{L}\{af(t)+bg(t)\}=aF(s)+bG(s)$，其中$a,b$为常数，$g(t)$的 Laplace变换为$G(s)$。
+        \item 微分性质：$\mathcal{L}\{f'(t)\}=sF(s)-f(0)$，$\mathcal{L}\{f''(t)\}=s^2F(s)-sf(0)-f'(0)$，依此类推。
+    \end{itemize}
+    进而，对于微分方程
+    \[
+    \sum_{k=0}^n a_k \frac{\mathrm d^k f(t)}{\mathrm dt^k} = g(t),
+    \]
+    对左右两边同时进行Laplace变换就得到了
+    \[
+    \sum_{k=0}^n a_k \left(s^k F(s) - \sum_{j=0}^{k-1} s^{k-1-j} f^{(j)}(0)\right) = G(s),
+    \]
+    遂可以解出$F(s)$，最后通过Laplace逆变换得到$f(t)$。其中Laplace逆变换的公式为
+    \[
+    f(x)=\frac{1}{2\pi\mathrm i}\int_{\Re s-\mathrm i\infty}^{\Re s+\mathrm i\infty}F(s)\mathrm e^{sx}\mathrm ds
+    \]
+    其中$\Re s$为$s$的实部。这个积分十分难看，我建议各位查表得到$f(t)$。
+
+    举个栗子：对于熟知的方程$\ddot x+\omega^2x=0$，初始条件$x(0)=x_0,\,\dot x(0)=v_0$，我们进行Laplace变换：
+    \[
+    \mathcal L\left\{\ddot x+\omega^2x\right\} = \mathcal L\{0\}
+    \]
+    即
+    \[
+    s^2X(s) - sx(0) - \dot x(0) + \omega^2X(s) = 0
+    \]
+    代入初始条件得到
+    \[
+    s^2X(s) - sx_0 - v_0 + \omega^2X(s) = 0
+    \]
+    解得
+    \[
+    X(s) = \frac{sx_0 + v_0}{s^2 + \omega^2}
+    \]
+    最后通过Laplace逆变换（实际上是查表）得到解$x(t)=\frac{v_0}{\omega}\sin(\omega t)+x_0\cos(\omega t)$。
+
+    \section{偏微分方程}
+	
+    前排提示：这部分非常变态，不论是对人还是对机器来说。在正式比赛中我强烈不建议引入偏微分方程，除非建模确实需要且无法回避。
+
+    \subsection{有限差分法}
+
+    其基本思想是通过差分代替微分。下面我们设一个3元函数$u(x,y,z)$，其中$x,y,z$为空间变量，$t$为时间变量，讨论它的不同阶导数具有的形式。为表达方便，设$u_{i,j,k}=u(x_i,y_j,z_k)$，其中
+    \[
+    x_i=x_0+i\Delta x,\,y_j=y_0+j\Delta y,\,z_k=z_0+k\Delta z.
+    \]
+
+    \subsubsection{一阶导数}
+
+    此处以对$x$的偏导数为例，其它偏导数类似。
+
+    \begin{itemize}
+        \item 向前差分（常用于显式）
+        \[
+        \frac{\partial u}{\partial x}\Bigg{|}_{x_i,y_j,z_k}\sim\frac{u_{i+1,j,k}-u_{i,j,k}}{\Delta x}
+        \]
+        \item 向后差分（常用于隐式）
+        \[
+        \frac{\partial u}{\partial x}\Bigg{|}_{x_i,y_j,z_k}\sim\frac{u_{i,j,k}-u_{i-1,j,k}}{\Delta x}
+        \]
+        \item 中心差分（精度更好，建议使用）
+        \[
+        \frac{\partial u}{\partial x}\Bigg{|}_{x_i,y_j,z_k}\sim\frac{1}{2}\left(\frac{u_{i+1,j,k}-u_{i,j,k}}{\Delta x}+\frac{u_{i,j,k}-u_{i-1,j,k}}{\Delta x}\right)=\frac{u_{i+1,j,k}-u_{i-1,j,k}}{2\Delta x}
+        \]
+    \end{itemize}
+
+    \subsubsection{二阶导数}
+
+    先讨论非混合的二阶偏导数，以$x$的中心差分为例（这里的推导直接用上面的一阶偏导中心差分式推出）。
+    \[
+    \frac{\partial^2 u}{\partial x^2}\Bigg{|}_{x_i,y_j,z_k}\sim\frac{(u_{i+1,j,k}-u_{i,j,k})-(u_{i,j,k}-u_{i-1,j,k})}{(\Delta x)^2}
+    \]
+
+    再讨论混合的二阶偏导数，以对$x,y$的中心差分为例（这里的推导有点复杂，我就偷个懒不写了）。
+    \[
+    \frac{\partial^2 u}{\partial x\partial y}\Bigg{|}_{x_i,y_j,z_k}\sim\frac{(u_{i+1,j+1,k}-u_{i+1,j-1,k})-(u_{i-1,j+1,k}-u_{i-1,j-1,k})}{4\Delta x\Delta y}
+    \]
+
+    中心差分的精度达到了$O(\Delta^2)$，其中$\Delta$表示变元变化量。
+
+    现在！让我们祈祷！比赛里我们不需要用到更高阶的偏导数！（实际上你可以通过\textbf DeepSeek \textbf First \textbf Search手段得到更高阶的偏导数表达式。）然后我们将已知条件代入上面的式子，就会得到一个无比复杂的线性方程组。解之就可以知道$u_{i,j,k}$的表达式。
+
+    \subsection{分离变量法}
+
+    这一方法假设解可以写成各自变量的单变量函数，即
+    \[
+    u(x_1,x_2,\cdots,x_n)=X_1(x_1)X_2(x_2)\cdots X_n(x_n),
+    \]
+    从而将偏微分方程转化为常微分方程求解。
+
+    实际上，这里涉及了Sturm-Liouville问题，一切变得过于复杂。由于我们的数学功底不扎实，这一方法尽量避免使用。此处只是提及，遇到再学习吧。
+
+    举个栗子：将电磁波方程设为
+    \[
+    \mathcal E=\mathcal E_0\exp(\mathrm i\omega t-\boldsymbol k\cdot\boldsymbol r),\,\mathcal H=\mathcal H_0\exp(\mathrm i\omega t-\boldsymbol k\cdot\boldsymbol r),\,\mathrm{where}\,\mathcal E,\,\mathcal H,\,\mathcal E_0,\,\mathcal H_0\in\mathbb C.
+    \]
+    推导Helmholtz方程的过程就是一个分离变量法的应用。它分离了时间和空间项。只是其中由于方程的形式，可以不用涉及复杂的变换。
+
+    \section{杂项}
+
+    \subsection{插值多项式}
+
+    我们最可能用到的是Lagrange插值多项式
+    \[
+    P(x)=\sum_{i=1}^{n}\eta_i\frac{(x-\xi_1)\cdots(x-\xi_{i-1})(x-\xi_{i+1})\cdots(x-\xi_n)}{(\xi_i-\xi_1)\cdots(\xi_i-\xi_{i-1})(\xi_i-\xi_{i+1})\cdots(\xi_i-\xi_n)},
+    \]
+    其中$(\xi_i,\eta_i)$为已知的数据点。在正式讲解的时候我提到Chebyshev点处的插值可以得到最优的结果，这里我有必要详细说明一下。
+
+    大家或多或少都听说过有名的Chebyshev定理：
+    \begin{quotation}
+        若$p(x)\in\mathbb R[x]$，且$\deg p>1$，首项系数为1，则
+        \[
+        \max_{-1\leq x\leq 1}|p(x)|\geq\frac{1}{2^{n-1}}.
+        \]
+    \end{quotation}
+    其中取到等号的条件就是$p(x)$为Chebyshev多项式。没错，就是那个和余弦函数过不去的多项式。这个定理的证明从略。而由分析学知道（证明一样从略），对函数$f\in C^{n+1}[-1,1]$以数据点$\xi_1,\cdots,\xi_n$构造的插值多项式$P(x)$，有误差
+    \[
+    f(x)-P(x)=\frac{f^{(n+1)}(\xi)}{(n+1)!}\omega(x),\,\mathrm{where}\,\xi\in[-1,1],
+    \]
+    其中$\omega(x)=(x-\xi_1)\cdots(x-\xi_n)$。而对于给定的$f$，其各阶导数的上界是给定的，所以我们若想要最小化误差，就需要最小化$|\omega(x)|$。
+
+    一顿一个列文虎克的你一定看出来了，这就是Chebyshev定理讨论的问题，所以对应地，$\omega(x)$的零点，也就是选取的数据点，在最佳情况下就是Chebyshev多项式的零点，也就是Chebyshev点
+    \[
+    \xi_i=\cos\frac{(2i-1)\pi}{2n},\,i=1,2,\cdots,n.
+    \]
+
+    那为什么说有时候要具体分析呢？那是因为此时$f^{(n+1)}(\xi)$的上界是不容易取到的，它对最小误差也有影响。
+
+    \subsection{数值积分}
+
+    我们在建模的过程中几乎都是遇到的性质很好的函数，甚至可能只是初等函数的组合（这不意味着一定可以找到积分的代数解！）。这意味着我们求数值解的过程中可以不用特别复杂的算法。我个人建议使用梯形近似法。
+
+    \section{致谢}
+
+    超级大声BB：Copilot牛逼！
+
+    \textbf{I LOVE COPILOT!}
+
+    \section{碎碎念}
+
+    两天时间写出这么长的文档确实算一种挑战，并且还需要保证可读性，但是这确实是在比赛中的真实效率要求，甚至比赛的要求更高。不论是写文章的我还是做建模、编程和绘图的大家，从准备到比赛的这期间确实辛苦了。我能保证的仅仅是将我认为值得做的事情做到我力所能及的最好，至于最后结果，我觉得不值得在意，更不必评价。
+
+    力学邢志忠老师在第一节课就说，希望我们在大学能有一个“Inflation”的过程，让自己认识的边界像宇宙大爆炸一样拓宽。在这一个星期中，我完整地经历了这个过程，并满怀歉意地将这些知识压缩成食之无味的饼干让大家不切实际地以更快的速度学会它们，这似乎确实不合理。若有部分不理解或我有写错的地方，欢迎指出，我一定会详细解释或虚心接受。
+
+    Verweile doch, du bist so schön! 这两周很短，比赛的四天更短，大家且行且珍惜。下面为我觉得算是一直以来支撑我做一些事情，也是很优美的一段话，现也送给大家。
+
+    \begin{quotation}
+    We all nestle under the great tree of wisdom, peering out to perceive the world. From the earth, and from the rain, we perceive its wonders until we become a white bird to perch atop a branch... and finally snap off the most important leaf. 
+
+    Once upon a time, I alone dreamed in this world. In my dreams, everybody would also dream after they fell asleep. Wild and wonderful thoughts would emerge from their minds. Some tumbled to the ground, and others floated to the sky, connecting all things in the world into one dazzling net. Amongst the plethora of worlds were numerous smaller worlds. All of fate finding within the tapestry their brilliant glow... Only they can completely repel the madness. Only dreams can awaken consciousness from the deepest darkness. 
+
+    I'm the one who posed this question, yet also the one who sought a solution... Goodbye, people of Sumeru. May you be blessed tonight with the sweetest of dreams.
+
+    \noindent (Greater Lord Rukkhadevata, \it{Akasha Pulses, the Kalpa Flame Rises}\rm)
+    \end{quotation}
+
+    \begin{quotation}
+    我们都栖息在智慧之树下，尝试阅读世界。从土中读、从雨中读，尔后化身白鸟攀上枝头……终于衔住了至关重要的那一片树叶。
+
+    曾经，我是世上唯一能够做梦的个体。在我的梦里，所有人入夜后也都会进入梦乡。人们的脑海中飘出奇思异想，有些滚落地面，有些浮到天上。它将所有事物连接成一片万分夺目的网。三千世界之中，又有小小世界，所有命运，皆在此间沸腾……唯有它们，才能彻底驱逐那些疯狂。唯有梦，才能将意识从最深沉的黑暗中唤醒。
+
+    我乃命题之人，亦是求解之人……须弥的子民啊，再见了，愿你们今晚得享美梦。
+
+    \noindent （大慈树王，《虚空鼓动，劫火高扬》）
+    \end{quotation}
+    
+    \textbf{FIN.}
+    
+\end{document}

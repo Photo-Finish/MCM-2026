@@ -1,0 +1,200 @@
+\begin{MintedVerbatim}[commandchars=\\\{\}]
+        \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+        \PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{matplotlib}\PYG{n+nn}{.}\PYG{n+nn}{pyplot}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{plt}
+
+        \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{runge\PYGZus{}kutta\PYGZus{}4}\PYG{p}{(}\PYG{n}{f}\PYG{p}{,} \PYG{n}{t\PYGZus{}span}\PYG{p}{,} \PYG{n}{y0}\PYG{p}{,} \PYG{n}{n\PYGZus{}steps}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{        }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{        四阶Runge\PYGZhy{}Kutta方法求解常微分方程 dy/dt = f(t, y)}
+
+\PYG{l+s+sd}{        参数：}
+\PYG{l+s+sd}{        f : function}
+\PYG{l+s+sd}{            函数 f(t, y)，返回 dy/dt}
+\PYG{l+s+sd}{        t\PYGZus{}span : tuple}
+\PYG{l+s+sd}{            时间区间 (t0, tf)}
+\PYG{l+s+sd}{        y0 : float 或 array}
+\PYG{l+s+sd}{            初始条件}
+\PYG{l+s+sd}{        n\PYGZus{}steps : int}
+\PYG{l+s+sd}{            步数}
+
+\PYG{l+s+sd}{        返回：}
+\PYG{l+s+sd}{        t : array}
+\PYG{l+s+sd}{            时间点}
+\PYG{l+s+sd}{        y : array}
+\PYG{l+s+sd}{            对应时间点的解}
+\PYG{l+s+sd}{        \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+        \PYG{n}{t0}\PYG{p}{,} \PYG{n}{tf} \PYG{o}{=} \PYG{n}{t\PYGZus{}span}
+        \PYG{n}{t} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linspace}\PYG{p}{(}\PYG{n}{t0}\PYG{p}{,} \PYG{n}{tf}\PYG{p}{,} \PYG{n}{n\PYGZus{}steps} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n}{dt} \PYG{o}{=} \PYG{n}{t}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{\PYGZhy{}} \PYG{n}{t}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}
+
+        \PYG{c+c1}{\PYGZsh{} 初始化结果数组}
+        \PYG{k}{if} \PYG{n+nb}{isinstance}\PYG{p}{(}\PYG{n}{y0}\PYG{p}{,} \PYG{p}{(}\PYG{n+nb}{int}\PYG{p}{,} \PYG{n+nb}{float}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{y} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{n\PYGZus{}steps} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}
+            \PYG{n}{y}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{=} \PYG{n}{y0}
+        \PYG{k}{else}\PYG{p}{:}
+            \PYG{n}{y} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n}{n\PYGZus{}steps} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{y0}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}
+            \PYG{n}{y}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{=} \PYG{n}{y0}
+
+        \PYG{c+c1}{\PYGZsh{} 四阶RK迭代}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{n\PYGZus{}steps}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{k1} \PYG{o}{=} \PYG{n}{f}\PYG{p}{(}\PYG{n}{t}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{p}{)}
+            \PYG{n}{k2} \PYG{o}{=} \PYG{n}{f}\PYG{p}{(}\PYG{n}{t}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{o}{/}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{k1}\PYG{p}{)}
+            \PYG{n}{k3} \PYG{o}{=} \PYG{n}{f}\PYG{p}{(}\PYG{n}{t}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{o}{/}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{k2}\PYG{p}{)}
+            \PYG{n}{k4} \PYG{o}{=} \PYG{n}{f}\PYG{p}{(}\PYG{n}{t}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt} \PYG{o}{*} \PYG{n}{k3}\PYG{p}{)}
+
+            \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{o}{/}\PYG{l+m+mi}{6} \PYG{o}{*} \PYG{p}{(}\PYG{n}{k1} \PYG{o}{+} \PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{k2} \PYG{o}{+} \PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{k3} \PYG{o}{+} \PYG{n}{k4}\PYG{p}{)}
+
+        \PYG{k}{return} \PYG{n}{t}\PYG{p}{,} \PYG{n}{y}
+
+        \PYG{c+c1}{\PYGZsh{} ==================== 示例1：单个一阶ODE ====================}
+        \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{f1}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{            }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}dy/dt = \PYGZhy{}2y\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+            \PYG{k}{return} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{y}
+
+        \PYG{c+c1}{\PYGZsh{} 求解}
+        \PYG{n}{t}\PYG{p}{,} \PYG{n}{y} \PYG{o}{=} \PYG{n}{runge\PYGZus{}kutta\PYGZus{}4}\PYG{p}{(}\PYG{n}{f1}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{,} \PYG{n}{y0}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{n\PYGZus{}steps}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} 与解析解比较}
+        \PYG{n}{y\PYGZus{}exact} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{exp}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{t}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} 绘图}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{5}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplot}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{b\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{RK4}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y\PYGZus{}exact}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{r\PYGZhy{}\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Exact}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{t}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{y}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{dy/dt = \PYGZhy{}2y, y(0)=1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} 计算误差}
+        \PYG{n}{error} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{y} \PYG{o}{\PYGZhy{}} \PYG{n}{y\PYGZus{}exact}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplot}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{error}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{g\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{t}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Error}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{RK4 Error}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{tight\PYGZus{}layout}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} ==================== 示例2：常微分方程组（二阶ODE转换） ====================}
+        \PYG{c+c1}{\PYGZsh{} 对于二阶系统：d\PYGZca{}2x/dt\PYGZca{}2 + dx/dt + x = 0}
+        \PYG{c+c1}{\PYGZsh{} 转换为两个一阶方程：}
+        \PYG{c+c1}{\PYGZsh{} y1 = x, y2 = dx/dt}
+        \PYG{c+c1}{\PYGZsh{} dy1/dt = y2}
+        \PYG{c+c1}{\PYGZsh{} dy2/dt = \PYGZhy{}y2 \PYGZhy{} y1}
+
+        \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{f2}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{            }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}y = [y1, y2]\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+            \PYG{k}{return} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{p}{[}\PYG{n}{y}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{n}{y}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{\PYGZhy{}} \PYG{n}{y}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{]}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} 求解}
+        \PYG{n}{t}\PYG{p}{,} \PYG{n}{y} \PYG{o}{=} \PYG{n}{runge\PYGZus{}kutta\PYGZus{}4}\PYG{p}{(}\PYG{n}{f2}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{,} \PYG{n}{y0}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,} \PYG{n}{n\PYGZus{}steps}\PYG{o}{=}\PYG{l+m+mi}{500}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} 绘图}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{4}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplot}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{b\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{x(t)}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{r\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{dx/dt}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{t}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{y}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Damped Oscillator: d\PYGZca{}2x/dt\PYGZca{}2 + dx/dt + x = 0}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{subplot}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{y}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{g\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{x}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{dx/dt}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Phase Portrait}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{tight\PYGZus{}layout}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+        \PYG{c+c1}{\PYGZsh{} ==================== 示例3：带时间依赖的ODE ====================}
+        \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{f3}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{            }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}dy/dt = t \PYGZhy{} y\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+            \PYG{k}{return} \PYG{n}{t} \PYG{o}{\PYGZhy{}} \PYG{n}{y}
+
+        \PYG{n}{t}\PYG{p}{,} \PYG{n}{y} \PYG{o}{=} \PYG{n}{runge\PYGZus{}kutta\PYGZus{}4}\PYG{p}{(}\PYG{n}{f3}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{5}\PYG{p}{)}\PYG{p}{,} \PYG{n}{y0}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{n\PYGZus{}steps}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} 绘图}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{6}\PYG{p}{,} \PYG{l+m+mi}{4}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{b\PYGZhy{}}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{RK4}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{t}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{y}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{dy/dt = t \PYGZhy{} y, y(0)=1}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{grid}\PYG{p}{(}\PYG{k+kc}{True}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+
+        \PYG{c+c1}{\PYGZsh{} ==================== 示例4：适应高阶ODE的通用函数 ====================}
+        \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{solve\PYGZus{}ode\PYGZus{}system}\PYG{p}{(}\PYG{n}{f}\PYG{p}{,} \PYG{n}{t\PYGZus{}span}\PYG{p}{,} \PYG{n}{y0}\PYG{p}{,} \PYG{n}{n\PYGZus{}steps}\PYG{p}{,} \PYG{n}{order}\PYG{o}{=}\PYG{l+m+mi}{4}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{            }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{            通用高阶ODE求解器（通过降阶为方程组）}
+
+\PYG{l+s+sd}{            参数：}
+\PYG{l+s+sd}{            f : function}
+\PYG{l+s+sd}{                高阶ODE右侧函数，接受(t, y)返回d\PYGZca{}n y/dt\PYGZca{}n}
+\PYG{l+s+sd}{            t\PYGZus{}span : tuple}
+\PYG{l+s+sd}{                时间区间}
+\PYG{l+s+sd}{            y0 : list}
+\PYG{l+s+sd}{                初始条件 [y(0), y\PYGZsq{}(0), y\PYGZsq{}\PYGZsq{}(0), ...]}
+\PYG{l+s+sd}{            n\PYGZus{}steps : int}
+\PYG{l+s+sd}{                步数}
+\PYG{l+s+sd}{            order : int}
+\PYG{l+s+sd}{                RK阶数（目前只实现4阶）}
+
+\PYG{l+s+sd}{            返回：}
+\PYG{l+s+sd}{            t : array}
+\PYG{l+s+sd}{                时间点}
+\PYG{l+s+sd}{            y : array}
+\PYG{l+s+sd}{                解及其各阶导数}
+\PYG{l+s+sd}{            \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+            \PYG{n}{t0}\PYG{p}{,} \PYG{n}{tf} \PYG{o}{=} \PYG{n}{t\PYGZus{}span}
+            \PYG{n}{t} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linspace}\PYG{p}{(}\PYG{n}{t0}\PYG{p}{,} \PYG{n}{tf}\PYG{p}{,} \PYG{n}{n\PYGZus{}steps} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}
+            \PYG{n}{dt} \PYG{o}{=} \PYG{n}{t}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{\PYGZhy{}} \PYG{n}{t}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}
+
+            \PYG{c+c1}{\PYGZsh{} y是矩阵，每行是一个时间点，每列是一个状态变量}
+            \PYG{n}{y} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{p}{(}\PYG{n}{n\PYGZus{}steps} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{y0}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}
+            \PYG{n}{y}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{=} \PYG{n}{y0}
+
+            \PYG{c+c1}{\PYGZsh{} 定义转换后的一阶系统}
+            \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{system}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{Y}\PYG{p}{)}\PYG{p}{:}
+                \PYG{c+c1}{\PYGZsh{} Y = [y, y\PYGZsq{}, y\PYGZsq{}\PYGZsq{}, ..., y\PYGZca{}\PYGZob{}(n\PYGZhy{}1)\PYGZcb{}]}
+                \PYG{c+c1}{\PYGZsh{} 构建导数向量}
+                \PYG{n}{dYdt} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros\PYGZus{}like}\PYG{p}{(}\PYG{n}{Y}\PYG{p}{)}
+                \PYG{c+c1}{\PYGZsh{} 前n\PYGZhy{}1个导数只是简单的移位}
+                \PYG{n}{dYdt}\PYG{p}{[}\PYG{p}{:}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{Y}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{p}{]}
+                \PYG{c+c1}{\PYGZsh{} 最后一个导数由原高阶ODE给出}
+                \PYG{n}{dYdt}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{f}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{Y}\PYG{p}{)}
+                \PYG{k}{return} \PYG{n}{dYdt}
+
+            \PYG{c+c1}{\PYGZsh{} 使用RK4求解}
+            \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{n\PYGZus{}steps}\PYG{p}{)}\PYG{p}{:}
+                \PYG{n}{k1} \PYG{o}{=} \PYG{n}{system}\PYG{p}{(}\PYG{n}{t}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]}\PYG{p}{)}
+                \PYG{n}{k2} \PYG{o}{=} \PYG{n}{system}\PYG{p}{(}\PYG{n}{t}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{o}{/}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{k1}\PYG{p}{)}
+                \PYG{n}{k3} \PYG{o}{=} \PYG{n}{system}\PYG{p}{(}\PYG{n}{t}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{o}{/}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{k2}\PYG{p}{)}
+                \PYG{n}{k4} \PYG{o}{=} \PYG{n}{system}\PYG{p}{(}\PYG{n}{t}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{p}{,} \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt} \PYG{o}{*} \PYG{n}{k3}\PYG{p}{)}
+
+            \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{y}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{+} \PYG{n}{dt}\PYG{o}{/}\PYG{l+m+mi}{6} \PYG{o}{*} \PYG{p}{(}\PYG{n}{k1} \PYG{o}{+} \PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{k2} \PYG{o}{+} \PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{k3} \PYG{o}{+} \PYG{n}{k4}\PYG{p}{)}
+
+            \PYG{k}{return} \PYG{n}{t}\PYG{p}{,} \PYG{n}{y}
+
+        \PYG{c+c1}{\PYGZsh{} 示例：三阶ODE y\PYGZsq{}\PYGZsq{}\PYGZsq{} + y\PYGZsq{}\PYGZsq{} + y\PYGZsq{} + y = 0}
+        \PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{f\PYGZus{}third\PYGZus{}order}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{Y}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{y}\PYG{p}{,} \PYG{n}{yp}\PYG{p}{,} \PYG{n}{ypp} \PYG{o}{=} \PYG{n}{Y}  \PYG{c+c1}{\PYGZsh{} y, y\PYGZsq{}, y\PYGZsq{}\PYGZsq{}}
+            \PYG{k}{return} \PYG{o}{\PYGZhy{}}\PYG{n}{ypp} \PYG{o}{\PYGZhy{}} \PYG{n}{yp} \PYG{o}{\PYGZhy{}} \PYG{n}{y}  \PYG{c+c1}{\PYGZsh{} y\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+
+        \PYG{c+c1}{\PYGZsh{} 求解}
+        \PYG{n}{t}\PYG{p}{,} \PYG{n}{Y} \PYG{o}{=} \PYG{n}{solve\PYGZus{}ode\PYGZus{}system}\PYG{p}{(}\PYG{n}{f\PYGZus{}third\PYGZus{}order}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{,}
+                        \PYG{n}{y0}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}  \PYG{c+c1}{\PYGZsh{} y(0)=1, y\PYGZsq{}(0)=0, y\PYGZsq{}\PYGZsq{}(0)=0}
+                        \PYG{n}{n\PYGZus{}steps}\PYG{o}{=}\PYG{l+m+mi}{500}\PYG{p}{)}
+
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{figure}\PYG{p}{(}\PYG{n}{figsize}\PYG{o}{=}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{4}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{Y}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{y(t)}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{Y}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{y}\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{(t)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{plot}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{Y}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{]}\PYG{p}{,} \PYG{n}{label}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{y}\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{\PYGZsq{}}\PYG{l+s+s2}{(t)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{xlabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{t}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{ylabel}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{y}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{legend}\PYG{p}{(}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{title}\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{Third Order ODE: y}\PYG{l+s+se}{\PYGZbs{}\PYGZsq{}}\PYG{l+s+se}{\PYGZbs{}\PYGZsq{}}\PYG{l+s+se}{\PYGZbs{}\PYGZsq{}}\PYG{l+s+s1}{ + y}\PYG{l+s+se}{\PYGZbs{}\PYGZsq{}}\PYG{l+s+se}{\PYGZbs{}\PYGZsq{}}\PYG{l+s+s1}{ + y}\PYG{l+s+se}{\PYGZbs{}\PYGZsq{}}\PYG{l+s+s1}{ + y = 0}\PYG{l+s+s1}{\PYGZsq{}}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{grid}\PYG{p}{(}\PYG{k+kc}{True}\PYG{p}{)}
+        \PYG{n}{plt}\PYG{o}{.}\PYG{n}{show}\PYG{p}{(}\PYG{p}{)}
+\end{MintedVerbatim}
