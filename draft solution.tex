@@ -1,0 +1,307 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MCM/ICM LaTeX Template %%
+%% 2026 MCM/ICM           %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{left=1in,right=0.75in,top=1in,bottom=1in}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Replace ABCDEF in the next line with your chosen problem
+% and replace 1111111 with your Team Control Number
+\newcommand{\Problem}{A}
+\newcommand{\Team}{2620586}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{newtxtext}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{newtxmath} % must come after amsXXX
+
+\usepackage[pdftex]{graphicx}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\lhead{Team \Team}
+\rhead{}
+\cfoot{}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}{Definition}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\graphicspath{{.}}  % Place your graphic files in the same directory as your main document
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif, .png}
+\thispagestyle{empty}
+\vspace*{-16ex}
+\centerline{\begin{tabular}{*3{c}}
+	\parbox[t]{0.3\linewidth}{\begin{center}\textbf{Problem Chosen}\\ \Large \textcolor{red}{\Problem}\end{center}}
+	& \parbox[t]{0.3\linewidth}{\begin{center}\textbf{2026\\ MCM/ICM\\ Summary Sheet}\end{center}}
+	& \parbox[t]{0.3\linewidth}{\begin{center}\textbf{Team Control Number}\\ \Large \textcolor{red}{\Team}\end{center}}	\\
+	\hline
+\end{tabular}}
+%%%%%%%%%%% Begin Summary %%%%%%%%%%%
+% Enter your summary here replacing the (red) text
+% Replace the text from here ...
+\begin{center}
+\textcolor{red}{%
+Use this template to begin typing the first page (summary page) of your electronic report. This \newline
+template uses a 12-point Times New Roman font. Submit your paper as an Adobe PDF \newline
+electronic file (e.g. 1111111.pdf), typed in English, with a readable font of at least 12-point type.	\\[2ex]
+Do not include the name of your school, advisor, or team members on this or any page.	\\[2ex]
+Be sure to change the control number and problem choice above.	\\
+You may delete these instructions as you begin to type your report here. 	\\[2ex]
+\textbf{Follow us @COMAPMath on X or COMAPCHINAOFFICIAL on Weibo for the \newline
+most up to date contest information.}
+}
+\end{center}
+% to here
+%%%%%%%%%%% End Summary %%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\pagestyle{fancy}
+% Uncomment the next line to generate a Table of Contents
+%\tableofcontents
+\newpage
+\setcounter{page}{1}
+\rhead{Page \thepage\ }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{eqnarray}
+	& P_\mathrm{total}=\frac{\mathrm dE}{\mathrm dt} \\
+	% 屏幕、电源自身、处理器、网络、发声、外设
+	& P_\mathrm{total}=P_\mathrm{screen}+P_\mathrm{processor}+P_\mathrm{network}+P_\mathrm{sound}+P_\mathrm{peripherals}+P_\mathrm{battery\,loss}
+\end{eqnarray}
+
+The goal is to solve
+\begin{equation}
+	(\mathrm{SOC})_{t,N}=\left(\frac{(\mathrm{Energy\,left\,in\,battery})}{C_N}\right)\times 100\%=\left(\frac{E_0-\int_0^t P_\mathrm{total}\mathrm dt}{C_N}\right)\times 100\%
+\end{equation}
+and
+\begin{equation}
+	t_\mathrm{remain}=\frac{E_0-\int_0^t P_\mathrm{total}\mathrm dt}{t_0^{-1}\int_0^{t_0}P_\mathrm{total}\mathrm dt}.
+\end{equation}
+
+\section{Screen}
+
+\subsection{OLED}
+
+\begin{equation}
+	P=\eta\cdot J\cdot V
+\end{equation}
+where $\eta$ is the efficiency, $J$ is the current density, and $V$ is the voltage.
+
+By Arrhenius equation, the carrier mobility, or the number of carriers whose energy exceeds the activation energy, is given by
+\begin{equation}
+	\mu(T)=\mu_0 \exp{-\frac{E_\mathrm{a}}{kT}}
+\end{equation}
+where $\mu_0$ is a constant, $E_\mathrm{a}$ is the activation energy, $k$ is the Boltzmann constant, and $T$ is the temperature in Kelvin.
+
+Thus, stable illumination when $P,\,J$ are constants
+\begin{equation}
+	V\propto V_0\exp{\frac{E_\mathrm{a}}{kT}}
+\end{equation}
+
+Now we may assume that the thermally-stimulated active migration rate $k_{nr}$ is proportional to $\mu_(T)$, i.e.
+\begin{equation}
+	k_{nr}=k_0\exp{-\frac{E_\mathrm {a}}{kT}}
+\end{equation}
+
+Lighting efficiency under high temperature
+\begin{equation}
+	\eta=\frac{k_r}{k_r+k_{nr}}=\frac{1}{1+A\exp{-E_\mathrm {a}/(kT)}},\,A=\frac{k_0}{k_r}
+\end{equation}
+where $k_r$ is the rate of electromagnetic radiation. Here we assume $P,\,V$ are constants, so
+\begin{equation}
+	J\propto \eta^{-1}\propto 1+A\exp{-E_\mathrm {a}/(kT)}
+\end{equation}
+hence, 
+\begin{equation}
+	P(T)\propto \exp{\frac{E_\mathrm{a1}}{kT}}\left(1+A\exp{-\frac{E_\mathrm {a2}}{kT}}\right)
+\end{equation}
+
+\subsection{Influence of Ambient Lighting}
+
+Citing the works from previous scholars, we have
+\begin{equation}
+	P_\mathrm{screen}=a_0+(Br)(a_\mathrm RP_\mathrm R+a_\mathrm GP_\mathrm G+a_\mathrm BP_\mathrm B)
+\end{equation}
+where indices R, G, B denote red, green, and blue respectively; $a_0,\,a_\mathrm R,\,a_\mathrm G,\,a_\mathrm B$ are constants related to the specific screen; $P_\mathrm R,\,P_\mathrm G,\,P_\mathrm B$ are the percentages of red, green, and blue respectively; and $Br$ is the brightness of the screen.
+
+We may assume that the user will adjust the brightness of the screen according to the ambient lighting $L_\mathrm{amb}$, that the brightness of the screen is proportional to $L_\mathrm{amb}$ by a factor of $\varepsilon$, and that $L_\mathrm{amb}$ is roughly a trigonometric function of time $t$ in a day, i.e.
+\begin{equation}
+	Br=\varepsilon L_\mathrm{amb}=\varepsilon L_0\sin{\left(\omega t+\delta\right)}+L_\mathrm{base}
+\end{equation}
+where $L_0$ is the maximum ambient lighting in a day, $\delta$ is a phase shift depending on the geographical location, and $L_\mathrm{base}$ is the base ambient lighting (e.g. indoor lighting).
+
+\section{Network}
+
+Citing the works from previous scholars, we have the following equation
+\begin{equation}
+	P_{\mathrm {network}}=\sum_i \alpha_{\mathrm ui}\theta_{\mathrm ui}+\alpha_{\mathrm di}\theta_{\mathrm di}+\beta
+\end{equation}
+where $\alpha_{\mathrm ui},\,\alpha_{\mathrm di},\,\beta$ are constants related to the specific network type, and $\theta_{\mathrm ui},\,\theta_{\mathrm di}$ are the upload and download throughputs (in Mbps) respectively. The index $i$ denote different processes.
+
+\section{Processing Units}
+
+\subsection{CPU}
+
+\begin{equation}
+	P_\mathrm{CPU}=P_\mathrm{static}+P_\mathrm{dynamic}
+\end{equation}
+
+For every transistor, we conside its effect of storing charges, and thus see it as a tiny capacitor. 
+\begin{equation}
+	E_\mathrm {unit}=\frac{1}{2}CU^2
+\end{equation}
+Here we consider the frequency of the CPU $f$, thus in a small cycle the energy consumed is $E_\mathrm{unit}$. Thus, in unit time, the dynamic power consumption is proportional to $U^2\cdot f$, i.e.
+\begin{equation}
+	P_\mathrm{dynamic}=\lambda U^2\cdot f
+\end{equation}
+where $f$ is related to $U$. Suppose 
+\begin{equation}
+	f=b U^\mu
+\end{equation}
+and the CPU utility is $\alpha$, then
+\begin{equation}
+	P_\mathrm{dynamic}=\alpha U^{2+\mu}b\lambda
+\end{equation}
+Citing the works from previous scholars, we have the static power consumption
+\begin{equation}
+	P_\mathrm{static}=U\left(c_1T^2\mathrm e^{c_2/T}+I_\mathrm{gate}\right)
+\end{equation}
+where $c_1,\,c_2$ are constants related to the specific CPU, and $I_\mathrm{gate}$ is the leakage current of the transistor gates.
+
+\subsection{GPU}
+Similar to CPU, we have
+\begin{eqnarray}
+	& P_\mathrm{GPU}=P_\mathrm{static}+P_\mathrm{dynamic} \\
+	& P_\mathrm{dynamic}=\alpha' U_\mathrm{GPU}^{2+\mu'}b'\lambda' \\
+	& P_\mathrm{static}=U_\mathrm{GPU}\left(c_3T^2\mathrm e^{c_4/T}+I_\mathrm{gate}'\right)
+\end{eqnarray}
+
+\section{Speakers}
+
+Citing the works from previous scholars, we have
+\begin{equation}
+	U_\mathrm{in,req}(L_c)=10^{\Delta L/20}U_\mathrm{ref}
+\end{equation}
+where $U_\mathrm{in,req}$ is the required input voltage, $L_c$ is the volume level chosen by the user, $\Delta L=L_c-L_\mathrm{ref}$ is the difference between $L_c$ and the reference volume level, and $U_\mathrm{ref}$ is the reference input voltage.
+
+The reference level is measured under the same circumstances, and vary accordingly with the exact speakers.
+
+Thus, the average power consumption of the speaker is
+\begin{equation}
+	P_\mathrm{speaker}=\frac{1}{t_0}\int_0^{t_0}\Re Z(f)\frac{U_\mathrm{in,req}(f)^2}{|Z(f)|^2}\mathrm dt
+\end{equation}
+where $f$ is the frequency (related to time $t$), and $Z(f)\in\mathbb C$ is the complex impedance of the speaker coil.
+
+\section{Battery Degradation}
+
+\subsection{Overview}
+
+By Nernst equation, we have
+\begin{equation}
+	\mathcal E=\mathcal E^{\circ}-\frac{RT}{nF}\log Q
+\end{equation}
+where $\mathcal E$ is the electromotive force, $\mathcal E^{\circ}$ is the standard electromotive force (magnitude 3.0401 V), $R$ is the universal gas constant, $T$ is the temperature in Kelvin, $n$ is the number of moles of electrons transferred in the reaction, $F$ is the Faraday constant, and $Q$ is the reaction quotient.
+
+Now we substitute $\mathcal E=U_\mathrm{min},$ where $U_\mathrm{min}$ is the minimum battery output voltage, and we have $Q=K$, the equilibrium constant. Thus,
+\begin{equation}
+	U_\mathrm{min}=\mathcal E^{\circ}-\frac{RT}{nF}\log K\Rightarrow K=\exp{\frac{nF(\mathcal E^{\circ}-U_\mathrm{min})}{RT}}
+\end{equation}
+
+We consider the total reaction
+\begin{equation}
+	\rm LiM(s)+ \mathit xe^- + \mathit xLi^+ \rightleftharpoons Li_{1+\mathit x}M(s)
+\end{equation}
+and the forward reaction (charging state), we have the equilibrium constant
+\begin{equation}
+	K_+=c^{-x}(\mathrm{Li^+})=\left(\frac{M(\mathrm {Li})\cdot V}{m(\mathrm{Li^+})}\right)^x
+\end{equation}
+where $V$ is the volume of the electrolyte. Hence, 
+\begin{equation}
+	m(\mathrm{Li^+})=M(\mathrm {Li})\cdot V\cdot K_+^{-\frac{1}{x}}=M(\mathrm {Li})\cdot V\cdot \exp{-\frac{nF(\mathcal E^{\circ}_+-U_\mathrm{min+})}{xRT}}
+\end{equation}
+If we define $1-r_+$ as the loss ratio of lithium ions in the electrolyte, then
+\begin{equation}
+	r_+=1-\frac{m(\mathrm{Li^+})}{m_0}=1-\frac{M(\mathrm {Li})\cdot V}{m_0}\cdot \exp{-\frac{nF(\mathcal E^{\circ}_+-U_\mathrm{min+})}{xRT}}
+\end{equation}
+
+Now we consider the reverse reaction (discharging state), we have the equilibrium constant
+\begin{equation}
+	K_-=c^x(\mathrm{Li^+})=\left(\frac{m(\mathrm{Li^+})}{M(\mathrm {Li})\cdot V}\right)^x
+\end{equation}
+Using similar methods and note that $\mathcal E^{\circ}_+=-\mathcal E^{\circ}_-$, we have
+\begin{equation}
+	r_-=1-\frac{M\mathrm{(Li^+)}\cdot V}{m_0}\exp {-\frac{nF(U_\mathrm{min-}+\mathcal E^{\circ}_+)}{xRT}}
+\end{equation}
+
+and the capacity after $N$ cycles is (assume $T$ is constant, and $N$ not necessarily an integer)
+\begin{equation}
+	C_N=C_0r_+^Nr_-^N
+\end{equation}
+For non-complete draining, we may assume that
+\begin{equation}
+	N=\sum_i p_i
+\end{equation}
+where $p_i$ is the percentage of capacity drained in the $i$-th cycle.
+
+\subsection{Internal Resistance}
+
+Citing the works from previous scholars, we may use a polynomial to model the internal resistance of the battery
+\begin{equation}
+	r_\mathrm i=\varphi_N\sum_{i=0}^4A_{i,4-i}(\mathrm{SOC})^iT^{4-i}
+\end{equation}
+where $A_{i,4-i}$ are constants related to the specific battery, and $\varphi_N=\varphi_0^N$ (we assume) is a coefficient related to the number of cycles.
+
+\section{Peripherals}
+
+\subsection{Camera}
+
+Suppose that the power consumption of the camera is proportional to the number of pixels and the frame rate, we have
+\begin{equation}
+	P_\mathrm{camera}=\gamma\cdot N_\mathrm{pixels}\cdot f_\mathrm{frame}+P_\mathrm{default}
+\end{equation}
+
+\subsection{Microphone}
+
+Suppose that the power consumption of the microphone is proportional to the sampling rate and bit rate, we have
+\begin{equation}
+	P_\mathrm{microphone}=\delta\cdot f_\mathrm{sample}b_\mathrm{sample}+P_\mathrm{default}
+\end{equation}
+
+\section{Heating Effects}
+
+For heating analysis, we consider the processing units as pure resistances. Thus, the heat generated by the units can be described as 
+\begin{eqnarray}
+	& q_\mathrm{P.U.}=\frac{\mathrm dQ_\mathrm{P.U.}}{\mathrm dt}=UI\\
+	& q_\mathrm{battery}=I^2r
+\end{eqnarray}
+then we may use the Fourier's law to analyze the heat transfer. Suppose the effective distance between the heat source and the other components is $d$, and the effective area of heat transfer is $A$, then we have
+\begin{equation}
+	q_\mathrm{disp}=k_\mathrm {P.U.}A_\mathrm{P.U.}\frac{T_\mathrm{P.U.}-T_\mathrm{env}}{d}+k_\mathrm {battery}A_\mathrm{battery}\frac{T_\mathrm{battery}-T_\mathrm{env}}{d}
+\end{equation}
+where $k$ is the thermal conductivity of the material between the source and the overall phone environment, $T_\mathrm{source}$ is the temperature of the heat source, and $T_\mathrm{env}$ is the temperature of the phone environment, where all other components are in direct contact with.
+
+Then, for the thermal sources, we have
+\begin{eqnarray}
+	& q_\mathrm {P.U.}-k_\mathrm {P.U.}A_\mathrm{P.U.}\frac{T_\mathrm{P.U.}-T_\mathrm{env}}{d}=c_\mathrm{P.U.}m_\mathrm{P.U.}\frac{\mathrm dT_\mathrm{P.U.}}{\mathrm dt} \\
+	& q_\mathrm {battery}-k_\mathrm {battery}A_\mathrm{battery}\frac{T_\mathrm{battery}-T_\mathrm{env}}{d}=c_\mathrm{battery}m_\mathrm{battery}\frac{\mathrm dT_\mathrm{battery}}{\mathrm dt}
+\end{eqnarray}
+where $c$ is the specific heat capacity of the processing unit material, and $m$ is the mass of the processing unit. For the overall phone environment, we have
+\begin{equation}
+	q_\mathrm{disp}-q_\mathrm{ext}=c_\mathrm{env}m_\mathrm{env}\frac{\mathrm dT_\mathrm{env}}{\mathrm dt}
+\end{equation}
+where $c_\mathrm{env}$ is the overall heat capacity of the phone environment, and $q_\mathrm{ext}$ is the heat loss to the external environment, which can be modeled using Newton's law of cooling
+\begin{equation}
+	q_\mathrm{ext}=hA_\mathrm{phone}\frac{\mathrm d(T_\mathrm{env}-T_\mathrm{ext})}{\mathrm dt}=hA_\mathrm{phone}\frac{\mathrm dT_\mathrm {env}}{\mathrm dt}
+\end{equation}
+where $h$ is the overall heat transfer coefficient, $A_\mathrm{phone}=2A_\mathrm{screen}\approx A_\mathrm{P.U.}+A_\mathrm{battery}$ is the surface area of the phone, and $T_\mathrm{ext}$ is the temperature of the external environment, which we see as a constant.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+\end

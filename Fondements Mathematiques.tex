@@ -1,0 +1,270 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{amssymb}
+\usepackage{upgreek}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{upgreek}
+\usepackage{extarrows}
+\usepackage[UTF8]{ctex}
+
+\begin{document}
+	
+	\title{Géométrie Différentielle - Fondements}
+	\author{$\lambda$}
+	\date{\today}
+	\maketitle
+	
+    \noindent 请允许我先进行无意义发电：
+
+    \begin{quotation}
+        分析是人类的语言，几何是自然的语言，代数是神明的语言。神说线性是优美的，于是有了线性代数，人们用它来做测度空间中的微积分，以及流形上的微积分。我们以人的视角窥视自然，于是有了微分几何。
+    \end{quotation}
+
+	\section{绪论}
+    
+    以下仅介绍了微分几何的基础内容，文档之余的很多性质请参考考相关教材。下面的叙述主要分两部分进行：曲线与曲面。对于相应的几何对象，最基本的考量是从切向和法向考虑其性质。例如：在曲面中，第一基本形式为其切向的分析，而第二基本形式为其法向的分析。由于技术原因，本文中不涉及图片，但会简要说明读者可以想象的图景。
+
+    为了研究上的方便，我们的空间将被视为欧氏空间 $\mathbb{R}^3$，并且我们将使用笛卡尔坐标系来描述空间中的点和向量。我们假定涉及的曲面与曲线均三次以上可微。若不加说明，默认曲线的形式为
+
+    \[
+    \boldsymbol r (s): \mathbb R \supset I \to \mathbb{R}^3
+    \]
+
+    其中 $s$ 是曲线自起点到给定点的弧长，我们将其作为参数，$\boldsymbol r(s)$ 是曲线在空间中的位置向量。同时默认曲面的形式为
+
+    \[
+    \boldsymbol r(u,v): \mathbb R^2 \supset D \to \mathbb R^3
+    \]
+
+    其中 $u$ 和 $v$ 是曲面参数，$\boldsymbol r(u,v)$ 是曲面在空间中的位置向量。
+
+    \section{曲线}
+
+    设曲线的形式为 $\boldsymbol r(s)=(x(s), y(s), z(s))$。
+
+    \subsection{基本量}
+
+    不难直接写出切向量 $\boldsymbol t(s) = \boldsymbol r'(s)=(x'(s), y'(s), z'(s))$，由于 $s$ 是弧长，所以可以理解为 $\boldsymbol t$ 是行进单位弧长后 $\boldsymbol r$ 的变化，故 $|\boldsymbol t|=1$。因此，单位切向量就是 $\boldsymbol t$ 本身，即 $\boldsymbol t/|\boldsymbol t| = \boldsymbol t$。
+    
+    回忆求算向心力公式的几何图形，不难发现， $\boldsymbol t$ 的变化率 $\boldsymbol t'$ 垂直于 $\boldsymbol t$ ，因此 $\boldsymbol t'$ 的方向就是曲线的法向量 $\boldsymbol n$ 的方向。但是此处 $\boldsymbol t'$ 的长度不一定为 $1$，因为 $\boldsymbol t$ 长度为 $1$，且其方向改变有快慢之分。现在我们引入曲率 $\kappa$ 来描述 $\boldsymbol t$ 方向改变的快慢程度，即 $\kappa = |\boldsymbol t'|=|\boldsymbol r''|$。所以得到单位法向量 $\boldsymbol n=\boldsymbol t'/\kappa$。它被叫做主法向量。
+
+    由此很容易得到一个同时垂直于 $\boldsymbol t$ 和 $\boldsymbol n$ 的向量 $\boldsymbol b = \boldsymbol t \times \boldsymbol n$，由于 $\boldsymbol t$ 和 $\boldsymbol n$ 都是单位向量，所以 $\boldsymbol b$ 也是单位向量。$\boldsymbol b$ 被称为副法向量。
+
+    若我们考虑平面 $\mathrm{Span}\{\boldsymbol t, \boldsymbol n\}$，那么曲线 $\boldsymbol r$ 在空间中可以扭曲，可以偏离这个平面。我们需要一个量刻画偏离的程度。不难想到对 $\boldsymbol b'$ 的分析。首先由于 $|\boldsymbol b|=1$，几何上可以验证 $\boldsymbol b' \perp \boldsymbol b$，故可以如下处理：
+
+    \[
+    \boldsymbol b'=\boldsymbol t' \times \boldsymbol n + \boldsymbol t \times \boldsymbol n' = \boldsymbol t \times \boldsymbol n' \perp \boldsymbol t \Rightarrow \boldsymbol b' \parallel \boldsymbol n
+    \]
+
+    这里用到了 $\boldsymbol t'$ 与 $\boldsymbol n$ 同方向的关系。于是可以定义挠率 $\tau = -|\boldsymbol b'|/|\boldsymbol n|=-\boldsymbol b' \cdot \boldsymbol n$。这里用到了 $|\boldsymbol n|=1$。
+
+    总结如下：
+
+    \begin{itemize}
+        \item 切向量：$\boldsymbol t(s) = \boldsymbol r'(s)=(x'(s), y'(s), z'(s))$。
+        \item 法向量：$\boldsymbol n = \boldsymbol t'/\kappa$，此处已单位化。
+        \item 副法向量：$\boldsymbol b = \boldsymbol t \times \boldsymbol n$，此处已单位化。
+        \item 曲率：$\kappa = |\boldsymbol t'|$
+        \item 挠率：$\tau = -\boldsymbol b' \cdot \boldsymbol n$
+    \end{itemize}
+
+    \subsection{Frenet 标架}
+
+    上面我们得到了三个两两垂直的向量，它们可以构成一个坐标系，或者说，一个标架。这个标架被称为 Frenet 标架。图形上它很类似于物理中学的自然坐标系，我们将其记为 $\{\boldsymbol r; \boldsymbol t, \boldsymbol n, \boldsymbol b\}$。下面探讨它的简单性质。
+
+    通过计算 (略) 我们得到以下公式
+
+    \begin{equation}
+    \begin{cases}
+    \boldsymbol r' = \boldsymbol t\\
+    \boldsymbol t' = \kappa \boldsymbol n\\
+    \boldsymbol n' = -\kappa \boldsymbol t + \tau \boldsymbol b \\
+    \boldsymbol b' = -\tau \boldsymbol n 
+    \end{cases}
+    \text{or}\quad
+    \frac{\mathrm d}{\mathrm ds}
+    \begin{bmatrix}
+    \boldsymbol t\\
+    \boldsymbol n\\
+    \boldsymbol b
+    \end{bmatrix}
+    =\begin{bmatrix}
+    0 & \kappa & 0\\
+    -\kappa & 0 & \tau\\
+    0 & -\tau & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+    \boldsymbol t\\
+    \boldsymbol n\\
+    \boldsymbol b
+    \end{bmatrix}
+    \end{equation}
+
+    很自然地，我们改写右边的式子，使之变成
+
+    \[
+    \begin{bmatrix}
+    \boldsymbol t\\
+    \boldsymbol n\\
+    \boldsymbol b
+    \end{bmatrix}+
+    \frac{\mathrm d}{\mathrm ds}
+    \begin{bmatrix}
+    \boldsymbol t\\
+    \boldsymbol n\\
+    \boldsymbol b
+    \end{bmatrix}
+    =\begin{bmatrix}
+    1 & \kappa & 0\\
+    -\kappa & 1 & \tau\\
+    0 & -\tau & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+    \boldsymbol t\\
+    \boldsymbol n\\
+    \boldsymbol b
+    \end{bmatrix}
+    \]
+	
+    计算右边矩阵的特征值 $1$ 和 $1\pm \mathrm i\sqrt{\kappa^2 + \tau^2}$，对应的特征向量为 $(\tau,0,\kappa)$、$(\mp \mathrm{i}\kappa,\sqrt{\kappa^2 + \tau^2},\pm\mathrm i\tau)$。所以我们知道当沿着曲线行进时，Frenet 标架的变化相当于以下两点
+
+    \begin{itemize}
+        \item 以 $\mathbb R (\tau,0,\kappa)$ 为轴的旋转，角速度 $\mathrm {Arg}(1\pm\mathrm{i}\sqrt{\kappa^2 + \tau^2})=\arctan \sqrt{\kappa^2 + \tau^2}$。
+        \item 在 $\mathbb R^3/\mathbb R (\tau,0,\kappa)$ 上某两个向量方向上的伸缩，比例 $\sqrt{\kappa^2 + \tau^2+1}$。
+    \end{itemize}
+
+    注：特征值的部分是自己的思考，教材中没有提到。DeepSeek 给出的角速度是 $\sqrt{\kappa^2 + \tau^2}$ 而非上面提及的反三角函数值。$\mathrm {Arg}(\cdot)$ 表示 $\mathrm{arg}(\cdot)$ 的主值。
+
+    以 $\boldsymbol r$ 表示所有的 Frenet 标架参量，我们得到
+
+    \begin{equation}
+    \begin{cases}
+        \boldsymbol t = \boldsymbol r' \\
+        \boldsymbol n = \boldsymbol r''/|\boldsymbol r''| \\
+        \boldsymbol b = \boldsymbol r' \times \boldsymbol r''/|\boldsymbol r''| \\
+        \kappa = |\boldsymbol r''| \\
+        \tau = -\frac{(\boldsymbol r' \times \boldsymbol r'')' \cdot \boldsymbol r''}{|\boldsymbol r''|^2}=\frac{(\boldsymbol r' \times \boldsymbol r'') \cdot \boldsymbol r'''}{|\boldsymbol r''|^2}
+    \end{cases}
+    \end{equation}
+
+    如果使用更一般的参数 $\theta$，即 $\boldsymbol r(\theta)=\boldsymbol r(s) \circ s(\theta)$，上式变成 (此处求导指对 $\theta$ 求导)
+
+    \begin{equation}
+    \begin{cases}
+        \boldsymbol t = \boldsymbol r'/|\boldsymbol r'| \\
+        \boldsymbol n = \frac{|\boldsymbol r'|}{|\boldsymbol r'\times \boldsymbol r''|} \boldsymbol r''-\frac{\boldsymbol r'\cdot \boldsymbol r''}{|\boldsymbol r'|\cdot|\boldsymbol r'\times \boldsymbol r''|}\boldsymbol r' \\
+        \boldsymbol b = \frac{\boldsymbol r'\times \boldsymbol r''}{|\boldsymbol r'\times \boldsymbol r''|} \\
+        \kappa = \frac{|\boldsymbol r'\times \boldsymbol r''|}{|\boldsymbol r'|^3} \\
+        \tau = \frac{(\boldsymbol r' \times \boldsymbol r'') \cdot \boldsymbol r'''}{|\boldsymbol r'\times \boldsymbol r''|^2}
+    \end{cases}
+    \end{equation}
+
+    \subsection{曲线的展开式}
+
+    由 Taylor 展开式
+
+    \[
+    \boldsymbol r(s)=\boldsymbol r(0)+\boldsymbol r'(0)s+\frac{1}{2}\boldsymbol r''(0)s^2+\frac{1}{6}\boldsymbol r'''(0)s^3 +o(s^3)
+    \]
+
+    并代入方程 (2) 中的结果，得到
+
+    \begin{equation}
+        \boldsymbol r(s)=\boldsymbol r(0)+\left(s-\frac{\kappa_0}{6}s^3\right)\boldsymbol t(0)+\left(\frac{\kappa_0}{2}s^2+\frac{\kappa_0'}{6}s^3\right)\boldsymbol n(0)+\left(\frac{\kappa_0 \tau_0}{6}s^3\right)\boldsymbol b(0) + o(s^3)
+    \end{equation}
+
+    其中 $\xi_0=\xi(0),\,\xi=\kappa,\tau,\kappa'$。在精度要求不太高的情况下，不妨研究如下近似曲线
+
+    \[
+    \boldsymbol r_1 (s) = \left(s,\frac{\kappa_0}{2}s^2,\frac{\kappa_0\tau_0}{6}s^3\right)
+    \]
+
+    \section{曲面}
+
+    \subsection{直观想象}
+
+    我们先前约定了曲面的基本形式为 $\boldsymbol r(u,v):\mathbb R^2 \supset D \to \mathbb R^3$。基于此，我们可以想象在平面上的矩形区域 $\mathcal D$ 被翻折、拉伸、弯曲等形成曲面 $\boldsymbol r(u,v)$，其中 $(u_0,v_0)\in\mathcal D$ 被映到 $\boldsymbol r(u_0,v_0)$。这样，$\mathcal D$ 上的两族正交直线 $u=u_i$ 和 $v=v_i$ 被映射到曲面上的两族曲线，它们彼此相交形成网格。一个很棒的例子 (涉及拉伸) 是地球上的经纬线；另一个很棒的例子 (不涉及拉伸) 是矩形被卷成桶状可以形成圆柱面，而在卷起来的同时翻转 $180^\circ$ 可以得到一个 Möbius 带 (此时要求矩形长宽比不小于 $\sqrt 3$ )。
+
+    下面我们约定偏导可以用符号 $\boldsymbol r_u$、$\boldsymbol r_{uv}$ 等表示，微分可以用 $\mathrm d\boldsymbol r$、$\updelta \boldsymbol r$ 等表示。
+
+    \subsection{第一基本形式}
+
+    此处我们聚焦于曲面于切向的性质。自然地我们考虑微分 $\mathrm d\boldsymbol r$，但是它包含了方向信息，故我们考虑其长度的平方，即 $\mathrm d\boldsymbol r \cdot \mathrm d\boldsymbol r=(\mathrm d\boldsymbol r)^2$。我们做以下计算
+
+    \[
+    \begin{aligned}
+        (\mathrm d\boldsymbol r)^2 = & (\boldsymbol r_u\mathrm du+\boldsymbol r_v\mathrm dv)^2\\
+        = & \boldsymbol r_u^2 (\mathrm du)^2 + 2\boldsymbol r_u \cdot \boldsymbol r_v \mathrm du \mathrm dv + \boldsymbol r_v^2 (\mathrm dv)^2\\
+    \end{aligned}
+    \]
+
+    故我们标记
+
+    \begin{equation}
+    \begin{cases}
+        E=\boldsymbol r_u^2 \\
+        F=\boldsymbol r_u\cdot \boldsymbol r_v \\
+        G=\boldsymbol r_v^2\\
+        (\mathrm d\boldsymbol r)^2 = E(\mathrm du)^2+2F\mathrm du\mathrm dv+G(\mathrm dv)^2 \xlongequal{\mathrm{def}}\text{\uppercase\expandafter{\romannumeral 1}}
+    \end{cases}
+    \end{equation}
+
+    很容易从直观上感受，在不同参数选取下计算对应的 $E,\,F,\,G$，$(\mathrm d\boldsymbol r)^2$ 的表达式是一样的。必须承认，这一切只是花哨的废话，但是这些记号的引入对后续问题的分析有简化作用。下面证明这个事情。
+
+    先改写上面的二次型成为更具启发性的形式
+
+    \begin{equation}
+        (\mathrm d\boldsymbol r)^2=
+        \begin{bmatrix}
+        \mathrm du & \mathrm dv
+        \end{bmatrix}
+        \begin{bmatrix}
+        E&F\\
+        F&G
+        \end{bmatrix}
+        \begin{bmatrix}
+        \mathrm du\\
+        \mathrm dv
+        \end{bmatrix}
+    \end{equation}
+
+    设映射 $\phi: \mathbb R^2\supset D\to D_1\subset \mathbb R^2$ 是将参数 $(u,v)$ 映为 $(\tilde u,\tilde v)$ 的映射，那么由多元函数微分学，我们知道
+
+    \[
+    \begin{bmatrix}
+    \mathrm d\tilde u \\ 
+    \mathrm d\tilde v
+    \end{bmatrix}
+    =\boldsymbol J
+    \begin{bmatrix}
+    \mathrm du\\
+    \mathrm dv
+    \end{bmatrix}
+    ,\,
+    \begin{bmatrix}
+    \mathrm d\tilde u & \mathrm d\tilde v
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    \mathrm du & \mathrm dv
+    \end{bmatrix}
+    \boldsymbol J^{\mathrm T}
+    ,\,\text{where}\,\boldsymbol J=
+    \begin{bmatrix}
+    \frac{\partial \tilde u}{\partial u} & \frac{\partial \tilde v}{\partial u} \\
+    \frac{\partial \tilde u}{\partial v} & \frac{\partial \tilde v}{\partial v} \\
+    \end{bmatrix}
+    \]
+
+    以及
+
+    \[
+    \boldsymbol r_u=a
+    \]
+
+    代入 (6) 式就有
+
+    \subsection{第二基本形式}
+
+\end{document}
